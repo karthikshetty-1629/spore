@@ -1,6 +1,6 @@
 {
   "updatedAt": "2026-09-25T22:10:00Z",
-  "focus": "Autonomous run complete — rehearse and submit",
+  "focus": "Autonomous run complete — public proof ready",
   "summary": "One goal now triggers planning, multi-query live research, memory classification, automatic watching, wake, rehydration, action, and verified telemetry without stage clicks.",
   "milestones": [
     {
@@ -41,7 +41,7 @@
     {
       "id": "demo",
       "title": "Prove it in three minutes",
-      "detail": "Lifecycle telemetry and measured context reduction are complete. Rehearse, record the video, and submit.",
+      "detail": "The autonomous lifecycle, measured context reduction, live evidence, and public proof are complete.",
       "status": "done",
       "owner": "Complete"
     }

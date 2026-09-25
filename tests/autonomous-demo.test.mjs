@@ -37,7 +37,7 @@ test('one command plans, scouts, schedules, wakes, acts, and verifies telemetry'
     },
   });
   try {
-    await controller.run('Monitor the OpenAI Responses API until official documentation is available.');
+    await controller.run('Monitor the OpenAI Responses API and shortlist it when official API reference documentation is available.');
     const snapshot = await controller.snapshot();
     assert.equal(watcherStarted, true);
     assert.equal(snapshot.status, 'complete');

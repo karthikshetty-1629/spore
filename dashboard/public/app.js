@@ -118,8 +118,8 @@ function render(s){
  const events=[...(evaluation?[{time:evaluation.finishedAt,title:`Liquid model check: ${passed}/${total} passed`,detail:`${evaluation.model.replace('hf.co/LiquidAI/','')} · representative examples, not a full reliability benchmark.`,type:good?'success':'warning'}]:[]),...s.activity];
  $('events').innerHTML=events.slice(0,4).map(e=>`<div class="event ${escape(e.type)}"><span class="event-dot"></span><div><h3>${escape(e.title)}</h3><p>${escape(e.detail)}</p><time datetime="${escape(e.time)}">${time(e.time)}</time></div></div>`).join('');
  const missing=[];if(!s.config.nimble)missing.push('Nimble key');if(!s.config.rawtree)missing.push('RawTree key');if(!s.ollama.online)missing.push('running Ollama');
- $('next-title').textContent=missing.length?'Finish your connections.':s.autonomous?.status==='complete'?'Rehearse and record the three-minute demo.':'Start the autonomous agent.';
- $('next-copy').textContent=missing.length?`Still needed: ${missing.join(', ')}. Credentials belong in the local .env file.`:s.autonomous?.status==='complete'?'The one-command run is complete, measured, and visible. Rehearse once, record it, and submit the public link.':'Use the green button above. The agent will complete every stage on its own.';
+ $('next-title').textContent=missing.length?'Finish your connections.':s.autonomous?.status==='complete'?'Autonomous proof is complete.':'Start the autonomous agent.';
+ $('next-copy').textContent=missing.length?`Still needed: ${missing.join(', ')}. Credentials belong in the local .env file.`:s.autonomous?.status==='complete'?'The one-command run is complete, measured, and visible on the public read-only site.':'Use the green button above. The agent will complete every stage on its own.';
  const lifecycleStatus=$('lifecycle-status');
  lifecycleStatus.textContent=telemetry?.remote_verified?'COMPLETE · VERIFIED':telemetry?.complete?'COMPLETE · LOCAL':'WAITING FOR A RUN';
  lifecycleStatus.className=`pill ${telemetry?.complete?'green':'neutral'}`;

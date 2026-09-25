@@ -96,9 +96,9 @@ Run the local build observatory:
 npm run dev
 ```
 
-Then open `http://127.0.0.1:4317`. The page reports recorded milestones and checks live Ollama health; it does not expose credentials. Enter the default goal and click **Start autonomous agent** once. The remaining phases run without stage buttons.
+Then open `http://127.0.0.1:4317`. The page reports recorded milestones and checks live Ollama health; it does not expose credentials. Click **Start autonomous agent** once. The remaining phases run without stage buttons. The verified scenario uses one fixed Responses API goal. Starting it again clears the previous autonomous database and archive, then repeats the complete pipeline with three live Nimble searches and one RawTree event batch.
 
-The guided demo is the first section on that page. Click **Reset demonstration**, then run its seven numbered buttons in order. It persists inspectable state in `data/spore-demo.sqlite` and detailed evidence in `data/spore-demo-archives/`. The same stages can be run from a terminal:
+The optional explain mode exposes the older seven-stage flow for component inspection. It persists inspectable state in `data/spore-demo.sqlite` and detailed evidence in `data/spore-demo-archives/`. The same stages can be run from a terminal:
 
 ```sh
 npm run demo -- reset

@@ -112,6 +112,7 @@ export class AutonomousDemoController {
     if (!this.rawtreeClient) throw new Error('RawTree is not configured.');
     if (!this.liquidClient) throw new Error('Liquid AI is not configured.');
     goal = validateGoal(goal);
+    if (goal !== DEFAULT_GOAL) throw new Error('This verified demo is scoped to the OpenAI Responses API objective.');
     await this.reset();
     const state = freshState();
     state.status = 'running'; state.goal = goal; state.started_at = this.clock().toISOString();

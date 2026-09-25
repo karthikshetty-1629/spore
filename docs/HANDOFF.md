@@ -38,7 +38,7 @@ The required demonstration is: the agent forgets something, the world changes, t
 - Archived context rehydration, strict Liquid reevaluation support, deterministic reevaluation, idempotent action logging, and persistent shortlist updates are implemented under `src/agent`.
 - Stable RawTree lifecycle events, batched delivery, disk-backed retry, read-back verification, measured metrics, and dashboard rendering are implemented under `src/telemetry`, `src/integrations/rawtree.mjs`, and `scripts/demo-telemetry.mjs`.
 - The guided dashboard demo persists each stage in `data/spore-demo.sqlite`, exposes SQLite rows and archive proof, supports live Nimble or labeled replay waking, uses Ollama-native structured output for Liquid, and publishes a copyable RawTree verification query.
-- The complete verified telemetry run is explicitly labeled `historical_replay` and `is_test`. Live-evidence demo rehearsal, recording, and submission remain.
+- The earlier guided telemetry run remains labeled `historical_replay` and `is_test`; the final autonomous proof is a separate live-evidence run.
 
 ## Model evidence
 
@@ -65,7 +65,7 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the complete lifecycle runs autonomously from one goal in the dashboard. A verified live run used Liquid for planning, evidence analysis, and the final decision; Nimble returned nine live sources across three queries; the official-source guard accepted two Responses API references; `AutonomousWatcher.start()` woke the spore; and RawTree read back all eleven events. Rehearsal, recording, and submission are next.
+Current position: the complete lifecycle runs autonomously from one fixed, verified goal in the dashboard. A verified live run used Liquid for planning, evidence analysis, and the final decision; Nimble returned nine live sources across three queries; the official-source guard accepted two Responses API references; `AutonomousWatcher.start()` woke the spore; and RawTree read back all eleven events.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.
@@ -78,7 +78,6 @@ Current position: the complete lifecycle runs autonomously from one goal in the 
 9. Completed: live multi-query Nimble scouting with Liquid assessment and official-domain citation validation.
 10. Completed: feed actual lifecycle data and measured context reduction into the existing dashboard.
 11. Completed: generate a sanitized read-only public proof site from the verified run.
-12. Rehearse twice, record a three-minute demo, and submit.
 
 ## Initial regression cases
 
@@ -112,4 +111,4 @@ A test and demo run show that a missing-API observation becomes a persisted dorm
 
 Tell the coding agent:
 
-> Read `README.md`, `docs/SETUP.md`, and `docs/HANDOFF.md`, inspect Git status and recent commits, run `npm run doctor` and `npm run check`, then run `npm run telemetry:demo`. Continue with the live-evidence demo pass, rehearsal, recording, and submission. Do not expose `.env` values or overstate replay evidence as live.
+> Read `README.md`, `docs/SETUP.md`, and `docs/HANDOFF.md`, inspect Git status and recent commits, then run `npm run doctor` and `npm run check`. Preserve the verified live autonomous flow and public proof. Do not expose `.env` values or overstate replay evidence as live.
