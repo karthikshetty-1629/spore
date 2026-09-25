@@ -18,6 +18,7 @@ const requiredKeys = [
   'LIQUID_BASE_URL',
   'LIQUID_MODEL',
   'LIQUID_REEVALUATION_MODEL',
+  'SPORE_DATABASE_PATH',
 ];
 
 function parseEnv(text) {
@@ -41,7 +42,7 @@ function row(label, ok, detail) {
 }
 
 const nodeMajor = Number(process.versions.node.split('.')[0]);
-row('Node.js', nodeMajor >= 20, process.version);
+row('Node.js', nodeMajor >= 22, process.version);
 
 let fileFailure = false;
 for (const file of requiredFiles) {
@@ -86,4 +87,4 @@ try {
 }
 
 console.log('\nNo paid API requests were made. No secret values were printed.');
-if (fileFailure || envFailure || ollamaFailure || nodeMajor < 20) process.exitCode = 1;
+if (fileFailure || envFailure || ollamaFailure || nodeMajor < 22) process.exitCode = 1;

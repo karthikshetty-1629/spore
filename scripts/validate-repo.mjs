@@ -12,8 +12,8 @@ const requiredFiles = [
 for (const file of requiredFiles) await readFile(file, 'utf8');
 
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
-if (Number(pkg.engines?.node?.match(/\d+/)?.[0] || 0) < 20) {
-  throw new Error('package.json must require Node.js 20 or newer.');
+if (Number(pkg.engines?.node?.match(/\d+/)?.[0] || 0) < 22) {
+  throw new Error('package.json must require Node.js 22 or newer.');
 }
 
 const progress = JSON.parse(await readFile('dashboard/progress.json', 'utf8'));

@@ -11,7 +11,7 @@ npm run doctor
 npm run check
 ```
 
-`doctor` checks local files, environment-variable presence, Ollama availability, and installed Liquid models without printing secret values or calling paid remote services. `check` validates JavaScript, Python syntax, JSON structure, and repository invariants.
+`doctor` checks local files, environment-variable presence, Ollama availability, and installed Liquid models without printing secret values or calling paid remote services. `check` validates JavaScript, Python syntax, JSON structure, repository invariants, and the SQLite storage layer. Node.js 22 or newer is required because SPORE uses the built-in SQLite module.
 
 ## 1. Event access
 

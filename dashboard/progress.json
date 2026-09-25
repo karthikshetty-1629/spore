@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:13:09Z",
-  "focus": "Give memories a persistent lifecycle",
-  "summary": "The validated four-state memory gate is complete. SQLite persistence and evidence archiving are next.",
+  "updatedAt": "2026-09-25T20:18:26Z",
+  "focus": "Archive dormant evidence",
+  "summary": "SQLite now stores runs and all memory classes. Archiving evidence and removing it from working context are next.",
   "milestones": [
     {
       "id": "setup",
@@ -20,9 +20,9 @@
     {
       "id": "storage",
       "title": "Give memories a lifecycle",
-      "detail": "Persist spores in SQLite, archive evidence, and remove dormant context from the agent's working state.",
+      "detail": "SQLite persistence is complete. Evidence archiving and working-context removal remain in this milestone.",
       "status": "active",
-      "owner": "Next step"
+      "owner": "SQLite complete"
     },
     {
       "id": "watcher",
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T20:18:26Z",
+      "title": "SQLite memory storage complete",
+      "detail": "Runs, working memories, durable memories, dormant spores, due checks, and JSON round trips now persist locally.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T20:13:09Z",
       "title": "Strict memory validation complete",
