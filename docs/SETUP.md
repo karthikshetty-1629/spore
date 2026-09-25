@@ -1,6 +1,6 @@
 # SPORE setup checklist
 
-This checklist separates account setup from implementation. No sponsor integration is connected yet.
+This checklist separates account setup from implementation. Nimble and RawTree access have been verified; Liquid model quality is being evaluated locally.
 
 ## 1. Event access
 
@@ -33,13 +33,13 @@ Completion check for implementation: insert a test lifecycle event and read it b
 
 Ask the sponsor whether an event-hosted inference endpoint is available. Record its model ID and setup instructions if so.
 
-The documented local fallback is Ollama. Install and open [Ollama for macOS](https://ollama.com/download), then download the model used in Liquid's official guide:
+The documented local runtime is Ollama. Install and open [Ollama for macOS](https://ollama.com/download), then download the instruct model used in Liquid's official guide:
 
 ```sh
 ollama pull hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF
 ```
 
-This is an initial model candidate; its classification and structured output quality must be tested before we settle on it. The local option does not require a paid inference API account.
+This is the fast baseline. Larger Liquid models can also run through Ollama, but each candidate must be tested for schema compliance, latency, and decision quality before selection. The local option does not require paid inference credits.
 
 References: [model library](https://docs.liquid.ai/lfm/models/complete-library), [official Ollama guide](https://docs.liquid.ai/deployment/on-device/ollama).
 
@@ -53,7 +53,7 @@ Completion check for implementation: obtain and validate one memory classificati
 - Record the region, profile name, and model ID; use the normal AWS credential provider flow.
 - Create DynamoDB/S3 resources only when the implementation needs them.
 
-AgentCore is a proposed option, not a prerequisite for the first local loop. If AWS access takes time, keep progressing on the memory gate, web sensing, and telemetry while access is resolved.
+AgentCore is optional for the hackathon build. The local plan uses SQLite for the spore registry, a local archive directory, and an application worker for scheduled checks so the three confirmed sponsor integrations remain the critical path.
 
 ## Submission checklist
 

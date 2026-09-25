@@ -1,0 +1,93 @@
+{
+  "updatedAt": "2026-09-25T19:34:24.287990+00:00",
+  "focus": "Make memory decisions reliable",
+  "summary": "The connections work. We are testing a stronger Liquid model before building the automatic memory loop.",
+  "milestones": [
+    {
+      "id": "setup",
+      "title": "Connect the tools",
+      "detail": "Public repository, live Nimble search, RawTree event write/read, and a running local model.",
+      "status": "done",
+      "owner": "Complete"
+    },
+    {
+      "id": "gate",
+      "title": "Teach the memory gate",
+      "detail": "Validate ACTIVE, DURABLE, SPORE, and DISCARD decisions on representative observations.",
+      "status": "active",
+      "owner": "In progress"
+    },
+    {
+      "id": "storage",
+      "title": "Give memories a lifecycle",
+      "detail": "Persist spores in SQLite, archive evidence, and remove dormant context from the agent's working state.",
+      "status": "pending",
+      "owner": "Next"
+    },
+    {
+      "id": "watcher",
+      "title": "Wake when the world changes",
+      "detail": "Use scheduled Nimble checks to detect a changed condition without a manual wake button.",
+      "status": "pending",
+      "owner": "Upcoming"
+    },
+    {
+      "id": "action",
+      "title": "Let the agent act again",
+      "detail": "Recover historical rationale, combine fresh evidence, reevaluate the provider, and update the shortlist.",
+      "status": "pending",
+      "owner": "Upcoming"
+    },
+    {
+      "id": "demo",
+      "title": "Prove it in three minutes",
+      "detail": "Measure context reduction, rehearse one complete story, record the video, and submit.",
+      "status": "pending",
+      "owner": "Final milestone"
+    }
+  ],
+  "checks": {
+    "nimble": {
+      "status": "verified",
+      "detail": "A real search returned two source URLs.",
+      "checkedAt": "2026-09-25T19:23:36.292600+00:00"
+    },
+    "rawtree": {
+      "status": "verified",
+      "detail": "One connection-test event was written and read back.",
+      "checkedAt": "2026-09-25T19:23:36.292600+00:00"
+    }
+  },
+  "activity": [
+    {
+      "time": "2026-09-25T19:34:24.287990+00:00",
+      "title": "Build observatory is live",
+      "detail": "Local progress page now shows connections, milestones, model checks, and the work remaining.",
+      "type": "success"
+    },
+    {
+      "time": "2026-09-25T19:24:00Z",
+      "title": "Small model needs improvement",
+      "detail": "The 1.2B model confused temporary blockers with durable requirements. These are real failed tests.",
+      "type": "warning"
+    },
+    {
+      "time": "2026-09-25T19:23:36.292600+00:00",
+      "title": "RawTree write and read verified",
+      "detail": "Created one labeled test event in spore_karthik_memory_events.",
+      "type": "success"
+    },
+    {
+      "time": "2026-09-25T19:23:36.292600+00:00",
+      "title": "Nimble search verified",
+      "detail": "Received live search results with source URLs.",
+      "type": "success"
+    },
+    {
+      "time": "2026-09-25T18:37:00Z",
+      "title": "SPORE repository published",
+      "detail": "Public repository connected to the local project. Credentials stay outside Git.",
+      "type": "success"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "name": "spore", "private": true, "version": "0.1.0", "type": "module",
+  "scripts": {"dev": "node dashboard/server.mjs", "start": "node dashboard/server.mjs", "check": "node --check dashboard/server.mjs && node --check dashboard/public/app.js"},
+  "engines": {"node": ">=20"}
+}

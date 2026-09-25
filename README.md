@@ -8,7 +8,7 @@ SPORE is a hackathon project exploring conditional memory for long-running agent
 
 ## Current status
 
-Repository initialized. The application and sponsor integrations are not implemented yet. The behavior and architecture below are the intended MVP, not claims of completed functionality.
+The local build observatory is running, and live connection checks have verified Nimble search and RawTree event write/read access. Liquid models run locally through Ollama; memory-decision quality is still being evaluated. The autonomous agent loop remains the next implementation milestone.
 
 ## Intended demonstration
 
@@ -24,16 +24,24 @@ The demo must distinguish real observations from fixtures or historical replay. 
 
 | Service | Role | Status |
 | --- | --- | --- |
-| Liquid AI | Structured memory decisions and wake conditions | Planned |
-| Nimble | Live web research and condition checks | Planned |
-| Tinybird / RawTree | Memory lifecycle events and analytics | Planned |
-| AWS | Agent inference and persistent storage | Planned; access to confirm |
+| Liquid AI | Structured memory decisions and wake conditions | Connected locally; quality evaluation in progress |
+| Nimble | Live web research and condition checks | Connection verified |
+| Tinybird / RawTree | Memory lifecycle events and analytics | Write/read verified |
+| AWS | Agent inference and persistent storage | Optional; local substitutes selected |
 
 The initial goal is one complete loop with a narrow trigger type. Infrastructure choices will follow verified sponsor access.
 
 ## Setup
 
-See [the setup checklist](docs/SETUP.md). Copy `.env.example` to `.env` for local settings. `.env` and runtime data are excluded from Git. The repository currently contains documentation and configuration placeholders only; there is no application command yet.
+See [the setup checklist](docs/SETUP.md). Copy `.env.example` to `.env` for local settings. `.env` and runtime data are excluded from Git.
+
+Run the local build observatory:
+
+```sh
+npm run dev
+```
+
+Then open `http://127.0.0.1:4317`. The page reports recorded milestones and checks live Ollama health; it does not expose credentials.
 
 ## Event
 
