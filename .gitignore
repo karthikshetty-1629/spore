@@ -1,0 +1,39 @@
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+.aws/
+credentials*
+secrets/
+*.pem
+*.key
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# JavaScript
+node_modules/
+.next/
+dist/
+coverage/
+
+# Local evidence, generated data, and model downloads
+data/
+archives/
+models/
+work/
+*.gguf
+*.safetensors
+*.sqlite*
+*.db
+*.log
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/
