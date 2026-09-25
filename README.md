@@ -12,7 +12,7 @@ The repository is a finalized development baseline. The local build observatory 
 
 The first memory-gate evaluation showed that an LLM cannot safely own lifecycle decisions by itself: the 1.2B instruct model passed 1/8 strict cases, the 2.6B reasoning model did not produce usable short structured responses, and the 8B-A1B model understood the SPORE case but still omitted a required trigger field. The implementation will therefore combine Liquid-assisted extraction with a deterministic policy, schema validation, and fail-closed behavior.
 
-The deterministic memory policy now classifies all eight representative project cases correctly. Strict model-output and input validation is the next step, followed by persistence and the autonomous memory lifecycle. See [the continuation handoff](docs/HANDOFF.md) for the exact build order and acceptance criteria.
+The memory gate now classifies all eight representative project cases correctly and strictly validates normalized observations and model decisions. SQLite persistence and the autonomous memory lifecycle are the next milestones. See [the continuation handoff](docs/HANDOFF.md) for the exact build order and acceptance criteria.
 
 ## Intended demonstration
 

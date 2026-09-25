@@ -84,6 +84,7 @@
     "expected": "DISCARD",
     "observation": {
       "scope": "candidate_evaluation",
+      "subject": "BlueCo",
       "is_complete": true,
       "is_relevant": false,
       "discard_reason": "Logo color does not affect the selection criteria."

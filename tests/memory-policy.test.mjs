@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-import { classifyObservation, MEMORY_DECISIONS } from '../src/memory/policy.mjs';
+import { MEMORY_DECISIONS } from '../src/memory/policy.mjs';
+import { evaluateObservation } from '../src/memory/gate.mjs';
 
 const cases = JSON.parse(
   await readFile(new URL('../fixtures/memory-gate-cases.json', import.meta.url), 'utf8'),
@@ -19,7 +20,7 @@ test('exports the four canonical memory decisions', () => {
 
 for (const scenario of cases) {
   test(`classifies ${scenario.name} as ${scenario.expected}`, () => {
-    const actual = classifyObservation(scenario.observation);
+    const actual = evaluateObservation(scenario.observation);
     assert.equal(actual.schema_version, 1);
     assert.equal(actual.decision, scenario.expected);
     assert.ok(actual.reason);

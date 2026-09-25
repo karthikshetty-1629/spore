@@ -1,13 +1,13 @@
 import { readFile } from 'node:fs/promises';
 
-import { classifyObservation } from '../src/memory/policy.mjs';
+import { evaluateObservation } from '../src/memory/gate.mjs';
 
 const cases = JSON.parse(
   await readFile(new URL('../fixtures/memory-gate-cases.json', import.meta.url), 'utf8'),
 );
 
 const rows = cases.map((scenario) => {
-  const result = classifyObservation(scenario.observation);
+  const result = evaluateObservation(scenario.observation);
   return {
     observation: scenario.name,
     expected: scenario.expected,

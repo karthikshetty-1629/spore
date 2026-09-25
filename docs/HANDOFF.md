@@ -31,7 +31,8 @@ The required demonstration is: the agent forgets something, the world changes, t
 - Ollama has the Liquid 1.2B Instruct, 2.6B, and 8B-A1B GGUF models installed.
 - `.env`, runtime data, archives, databases, model weights, and logs are excluded from Git.
 - The deterministic four-state memory policy is implemented in `src/memory/policy.mjs` and passes the eight representative fixtures.
-- Strict boundary validation, persistence, and the rest of the application-core agent loop are not implemented yet.
+- Strict input/output validation is implemented in `src/domain/memory-validation.mjs`; `src/memory/gate.mjs` is the validated entry point.
+- Persistence and the rest of the application-core agent loop are not implemented yet.
 
 ## Model evidence
 
@@ -58,10 +59,10 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the deterministic four-state policy and representative regression fixtures are complete. Strict schema validation is next.
+Current position: the deterministic policy, strict boundary validation, and regression fixtures are complete. SQLite persistence is next.
 
-1. Add versioned schemas and strict validation around the completed deterministic policy.
-2. Add SQLite tables for spores, working memory, durable memory, and runs.
+1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
+2. Next: add SQLite tables for spores, working memory, durable memory, and runs.
 3. Add local archive storage and prove that spored evidence leaves working context.
 4. Wrap the proven Nimble search request in a narrow adapter returning normalized evidence with URLs and timestamps.
 5. Wrap RawTree writes in an append-only lifecycle event adapter.
