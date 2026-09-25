@@ -60,3 +60,31 @@ test('uses Ollama native structured output for local Liquid inference', async ()
   assert.equal(request.body.format.type, 'object');
   assert.equal(result.eligible, true);
 });
+
+test('maps Liquid result IDs back to exact Nimble URLs', async () => {
+  let request;
+  const results = [
+    { title: 'Responses overview', description: 'Official API reference.', url: 'https://developers.openai.com/api/reference/responses/overview' },
+    { title: 'Unrelated', description: 'A third-party page.', url: 'https://example.com/page' },
+  ];
+  const client = new LiquidReevaluationClient({
+    model: 'liquid-local',
+    apiMode: 'ollama',
+    fetchImpl: async (url, options) => {
+      request = { url, body: JSON.parse(options.body) };
+      return {
+        ok: true,
+        json: async () => ({ message: { content: JSON.stringify({ schema_version: 1, condition_met: true, matched_result_ids: ['R1'], summary: 'Official reference found.' }) } }),
+      };
+    },
+  });
+
+  const assessment = await client.assessEvidence({
+    plan: { official_domains: ['openai.com'] },
+    results,
+  });
+
+  assert.deepEqual(assessment.matched_urls, [results[0].url]);
+  assert.deepEqual(request.body.format.properties.matched_result_ids.items.enum, ['R1', 'R2']);
+  assert.match(request.body.messages[1].content, /"result_id":"R1"/);
+});
