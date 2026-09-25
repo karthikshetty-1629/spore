@@ -33,7 +33,8 @@ The required demonstration is: the agent forgets something, the world changes, t
 - The deterministic four-state memory policy is implemented in `src/memory/policy.mjs` and passes the eight representative fixtures.
 - Strict input/output validation is implemented in `src/domain/memory-validation.mjs`; `src/memory/gate.mjs` is the validated entry point.
 - SQLite persistence for runs, working memory, durable memory, and spores is implemented in `src/storage/sqlite.mjs`; the default application path is `data/spore.sqlite`.
-- Evidence archiving, working-context removal, and the rest of the application-core agent loop are not implemented yet.
+- Integrity-checked evidence archiving and transactional working-context removal are implemented in `src/storage/archive.mjs` and `src/memory/lifecycle.mjs`.
+- The autonomous watcher and the rest of the application-core agent loop are not implemented yet.
 
 ## Model evidence
 
@@ -60,12 +61,12 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the deterministic policy, strict boundary validation, regression fixtures, and SQLite persistence are complete. Evidence archiving and working-context removal are next.
+Current position: the memory gate, validation, SQLite persistence, evidence archiving, and working-context removal are complete. The Nimble adapter and autonomous watcher are next.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.
-3. Next: add local archive storage and prove that spored evidence leaves working context.
-4. Wrap the proven Nimble search request in a narrow adapter returning normalized evidence with URLs and timestamps.
+3. Completed: local archive storage with integrity checks and transactional working-context removal.
+4. Next: wrap the proven Nimble search request in a narrow adapter returning normalized evidence with URLs and timestamps.
 5. Wrap RawTree writes in an append-only lifecycle event adapter.
 6. Add a scheduler, due-spore query, and typed condition evaluator.
 7. Rehydrate archived rationale with fresh evidence, reevaluate the provider, and update a shortlist.

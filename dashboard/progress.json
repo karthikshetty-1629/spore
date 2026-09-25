@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:18:26Z",
-  "focus": "Archive dormant evidence",
-  "summary": "SQLite now stores runs and all memory classes. Archiving evidence and removing it from working context are next.",
+  "updatedAt": "2026-09-25T20:22:45Z",
+  "focus": "Wake memories when the world changes",
+  "summary": "Memory persistence and archive-and-forget are complete. The autonomous web watcher is next.",
   "milestones": [
     {
       "id": "setup",
@@ -20,16 +20,16 @@
     {
       "id": "storage",
       "title": "Give memories a lifecycle",
-      "detail": "SQLite persistence is complete. Evidence archiving and working-context removal remain in this milestone.",
-      "status": "active",
-      "owner": "SQLite complete"
+      "detail": "SQLite persists every memory class; detailed evidence is archived before dormant context is removed.",
+      "status": "done",
+      "owner": "Complete"
     },
     {
       "id": "watcher",
       "title": "Wake when the world changes",
       "detail": "Use scheduled Nimble checks to detect a changed condition without a manual wake button.",
-      "status": "pending",
-      "owner": "Upcoming"
+      "status": "active",
+      "owner": "Next step"
     },
     {
       "id": "action",
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T20:22:45Z",
+      "title": "Archive-and-forget lifecycle complete",
+      "detail": "Detailed evidence is integrity-checked in local archive storage before it leaves the agent's working context.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T20:18:26Z",
       "title": "SQLite memory storage complete",

@@ -141,6 +141,10 @@ export class SporeDatabase {
     return mapMemory(this.database.prepare('SELECT * FROM working_memories WHERE memory_id = ?').get(memoryId));
   }
 
+  deleteWorkingMemory(memoryId) {
+    return Number(this.database.prepare('DELETE FROM working_memories WHERE memory_id = ?').run(memoryId).changes);
+  }
+
   saveDurableMemory({ memory_id, run_id, subject = null, payload, updated_at = new Date().toISOString() }) {
     this.database.prepare(`
       INSERT INTO durable_memories (memory_id, run_id, subject, payload_json, updated_at)
@@ -248,6 +252,21 @@ export class SporeDatabase {
       durable: count('durable_memories'),
       spores: count('spores'),
     };
+  }
+
+  withTransaction(operation) {
+    this.database.exec('BEGIN IMMEDIATE');
+    try {
+      const result = operation();
+      if (result && typeof result.then === 'function') {
+        throw new TypeError('SQLite transaction callbacks must be synchronous');
+      }
+      this.database.exec('COMMIT');
+      return result;
+    } catch (error) {
+      this.database.exec('ROLLBACK');
+      throw error;
+    }
   }
 
   close() {
