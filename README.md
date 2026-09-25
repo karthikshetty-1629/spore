@@ -12,7 +12,7 @@ The repository is a finalized development baseline. The local build observatory 
 
 The first memory-gate evaluation showed that an LLM cannot safely own lifecycle decisions by itself: the 1.2B instruct model passed 1/8 strict cases, the 2.6B reasoning model did not produce usable short structured responses, and the 8B-A1B model understood the SPORE case but still omitted a required trigger field. The implementation will therefore combine Liquid-assisted extraction with a deterministic policy, schema validation, and fail-closed behavior.
 
-The project now implements the complete local memory lifecycle: validated classification, SQLite persistence, integrity-checked archive-and-forget, scheduled Nimble condition checks, idempotent waking, context rehydration, provider reevaluation, and a persistent shortlist action. The larger Liquid model has a strict reevaluation adapter; deterministic tests and demos avoid unnecessary model tokens. RawTree lifecycle telemetry and the polished end-to-end demo remain. See [the continuation handoff](docs/HANDOFF.md) for the exact build order and acceptance criteria.
+The project now implements the complete local memory lifecycle: validated classification, SQLite persistence, integrity-checked archive-and-forget, scheduled Nimble condition checks, idempotent waking, context rehydration, provider reevaluation, a persistent shortlist action, and RawTree lifecycle telemetry with disk-backed retry. The larger Liquid model has a strict reevaluation adapter; deterministic tests and demos avoid unnecessary model tokens. Demo rehearsal, recording, and submission remain. See [the continuation handoff](docs/HANDOFF.md) for acceptance criteria.
 
 ## Intended demonstration
 
@@ -74,6 +74,18 @@ Run the complete archive, wake, rehydrate, reevaluate, and shortlist flow with r
 
 ```sh
 npm run action:demo
+```
+
+Measure that full replay lifecycle locally without spending credits:
+
+```sh
+npm run telemetry:demo
+```
+
+Send one labeled test batch to RawTree and verify it by reading the event IDs back:
+
+```sh
+npm run telemetry:live
 ```
 
 Run the local build observatory:

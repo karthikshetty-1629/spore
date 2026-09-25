@@ -27,7 +27,7 @@ The required demonstration is: the agent forgets something, the world changes, t
 - The repository is public at <https://github.com/karthikshetty-1629/spore>.
 - `npm run dev` serves the local build observatory at <http://127.0.0.1:4317>.
 - A live Nimble search returned source URLs.
-- A labeled test event was written to and read from RawTree table `spore_karthik_memory_events`.
+- A connection event was verified in `spore_karthik_memory_events`; a complete 11-event lifecycle replay was written to and read from `spore_karthik_lifecycle_events_v1`.
 - Ollama has the Liquid 1.2B Instruct, 2.6B, and 8B-A1B GGUF models installed.
 - `.env`, runtime data, archives, databases, model weights, and logs are excluded from Git.
 - The deterministic four-state memory policy is implemented in `src/memory/policy.mjs` and passes the eight representative fixtures.
@@ -36,7 +36,8 @@ The required demonstration is: the agent forgets something, the world changes, t
 - Integrity-checked evidence archiving and transactional working-context removal are implemented in `src/storage/archive.mjs` and `src/memory/lifecycle.mjs`.
 - The bounded Nimble adapter, typed condition evaluator, and autonomous idempotent watcher are implemented under `src/integrations` and `src/watcher`.
 - Archived context rehydration, strict Liquid reevaluation support, deterministic reevaluation, idempotent action logging, and persistent shortlist updates are implemented under `src/agent`.
-- RawTree lifecycle telemetry and the polished end-to-end demo are not implemented yet.
+- Stable RawTree lifecycle events, batched delivery, disk-backed retry, read-back verification, measured metrics, and dashboard rendering are implemented under `src/telemetry`, `src/integrations/rawtree.mjs`, and `scripts/demo-telemetry.mjs`.
+- The complete verified telemetry run is explicitly labeled `historical_replay` and `is_test`. Live-evidence demo rehearsal, recording, and submission remain.
 
 ## Model evidence
 
@@ -63,18 +64,18 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the complete local lifecycle through rehydration and agent action is implemented. RawTree lifecycle telemetry is next.
+Current position: the complete replay lifecycle through RawTree telemetry and dashboard metrics is implemented and verified. Demo rehearsal and a live-evidence pass are next.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.
 3. Completed: local archive storage with integrity checks and transactional working-context removal.
 4. Completed: bounded Nimble search adapter returning normalized evidence with URLs.
-5. Wrap RawTree writes in an append-only lifecycle event adapter.
+5. Completed: RawTree append-only lifecycle event adapter, batch delivery, buffering, and read-back verification.
 6. Completed: scheduler, due-spore query, typed condition evaluator, retry isolation, and idempotent waking.
 7. Completed: rehydrate archived rationale with fresh evidence, reevaluate the provider, and update a shortlist exactly once.
-8. Add a resettable end-to-end scenario using clearly labeled Day 1 / Day 60 fixtures.
+8. Completed: resettable end-to-end scenario using clearly labeled historical replay evidence.
 9. Replace or supplement the replay sensor with live Nimble evidence.
-10. Feed actual lifecycle data and measured context reduction into the existing dashboard.
+10. Completed: feed actual lifecycle data and measured context reduction into the existing dashboard.
 11. Rehearse twice, record a three-minute demo, and submit.
 
 ## Initial regression cases
@@ -109,4 +110,4 @@ A test and demo run show that a missing-API observation becomes a persisted dorm
 
 Tell the coding agent:
 
-> Read `README.md`, `docs/SETUP.md`, and `docs/HANDOFF.md`, inspect Git status and recent commits, run `npm run doctor` and `npm run check`, and then implement the first vertical slice from schemas through SQLite persistence. Do not expose `.env` values or redesign the dashboard.
+> Read `README.md`, `docs/SETUP.md`, and `docs/HANDOFF.md`, inspect Git status and recent commits, run `npm run doctor` and `npm run check`, then run `npm run telemetry:demo`. Continue with the live-evidence demo pass, rehearsal, recording, and submission. Do not expose `.env` values or overstate replay evidence as live.

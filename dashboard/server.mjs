@@ -8,6 +8,7 @@ const host = '127.0.0.1';
 const origin = `http://${host}:${port}`;
 const progressPath = path.join(root, 'dashboard/progress.json');
 const runtimePath = path.join(root, 'data/dashboard-checks.json');
+const telemetryPath = path.join(root, 'data/telemetry-summary.json');
 let busy = false;
 async function readJSON(file, fallback) { try { return JSON.parse(await readFile(file, 'utf8')); } catch { return fallback; } }
 async function config() {
@@ -20,10 +21,10 @@ async function jsonRequest(url, body, key, timeout = 15000) {
   return response.json();
 }
 async function status() {
-  const [cfg, progress, checks, evaluation] = await Promise.all([config(), readJSON(progressPath, {}), readJSON(runtimePath, {}), readJSON(path.join(root,'data/model-evaluation.json'), null)]);
+  const [cfg, progress, checks, evaluation, telemetry] = await Promise.all([config(), readJSON(progressPath, {}), readJSON(runtimePath, {}), readJSON(path.join(root,'data/model-evaluation.json'), null), readJSON(telemetryPath, null)]);
   let ollama = {online:false, installed:[], modelAvailable:false};
   try { const tags = await jsonRequest('http://127.0.0.1:11434/api/tags', null, null, 2000); const installed = tags.models.map(m=>m.name); ollama = {online:true, installed, modelAvailable:installed.some(n=>n===cfg.LIQUID_MODEL || n===cfg.LIQUID_MODEL+':latest')}; } catch {}
-  return {...progress,checks:{...progress.checks,...checks},evaluation,ollama, busy, serverTime:new Date().toISOString(), config:{nimble:!!cfg.NIMBLE_API_KEY, rawtree:!!cfg.RAWTREE_API_KEY, database:cfg.RAWTREE_DATABASE || 'default', model:cfg.LIQUID_MODEL || 'Not configured'}, source:'Local project status + live Ollama check'};
+  return {...progress,checks:{...progress.checks,...checks},evaluation,telemetry,ollama, busy, serverTime:new Date().toISOString(), config:{nimble:!!cfg.NIMBLE_API_KEY, rawtree:!!cfg.RAWTREE_API_KEY, database:cfg.RAWTREE_DATABASE || 'default', model:cfg.LIQUID_MODEL || 'Not configured'}, source:'Local project status + measured lifecycle telemetry + live Ollama check'};
 }
 async function checkConnections() {
   if (busy) return;

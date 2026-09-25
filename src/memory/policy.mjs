@@ -17,8 +17,8 @@ function result(decision, reason, wakeCondition = null) {
 /**
  * Classify a normalized observation using deterministic lifecycle rules.
  *
- * Liquid models will eventually normalize raw text into this input shape.
- * Strict input/output validation is deliberately the next implementation step.
+ * Liquid-assisted extraction can normalize raw text into this input shape.
+ * The validated gate keeps this deterministic policy authoritative.
  */
 export function classifyObservation(observation) {
   const scope = observation?.scope;

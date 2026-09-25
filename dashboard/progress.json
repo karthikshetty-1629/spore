@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:31:19Z",
-  "focus": "Record the full lifecycle",
-  "summary": "SPORE can now archive, wake, rehydrate, reevaluate, and update a shortlist. RawTree lifecycle telemetry is next.",
+  "updatedAt": "2026-09-25T20:48:45Z",
+  "focus": "Rehearse the three-minute demo",
+  "summary": "The complete sleep, wake, rehydrate, and act lifecycle is now measured and verified in RawTree. Demo polish and submission remain.",
   "milestones": [
     {
       "id": "setup",
@@ -41,7 +41,7 @@
     {
       "id": "demo",
       "title": "Prove it in three minutes",
-      "detail": "Add RawTree lifecycle telemetry, measure context reduction, rehearse, record the video, and submit.",
+      "detail": "Lifecycle telemetry and measured context reduction are complete. Rehearse, record the video, and submit.",
       "status": "active",
       "owner": "Next step"
     }
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T20:48:45Z",
+      "title": "Full lifecycle telemetry verified",
+      "detail": "RawTree read back all 11 labeled replay events; the run released 3,012 working tokens and measured a 49.4% payload reduction.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T20:31:19Z",
       "title": "Rehydration and agent action complete",
