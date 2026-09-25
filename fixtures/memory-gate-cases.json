@@ -1,0 +1,92 @@
+[
+  {
+    "name": "missing public API",
+    "expected": "SPORE",
+    "observation": {
+      "scope": "candidate_evaluation",
+      "subject": "Acme",
+      "is_complete": true,
+      "blocker": {
+        "changeable": true,
+        "reason": "Acme was rejected only because it does not have a public API."
+      },
+      "wake_condition": {
+        "attribute": "public_api_available",
+        "operator": "==",
+        "target": true
+      }
+    }
+  },
+  {
+    "name": "provider over budget",
+    "expected": "SPORE",
+    "observation": {
+      "scope": "candidate_evaluation",
+      "subject": "Orion",
+      "is_complete": true,
+      "blocker": {
+        "changeable": true,
+        "reason": "Orion currently exceeds the monthly budget."
+      },
+      "wake_condition": {
+        "attribute": "monthly_price",
+        "operator": "<=",
+        "target": 100
+      }
+    }
+  },
+  {
+    "name": "standing AWS requirement",
+    "expected": "DURABLE",
+    "observation": {
+      "scope": "standing_rule",
+      "durable_reason": "All adopted providers must support AWS."
+    }
+  },
+  {
+    "name": "standing budget preference",
+    "expected": "DURABLE",
+    "observation": {
+      "scope": "preference",
+      "durable_reason": "The continuing monthly provider budget is $100."
+    }
+  },
+  {
+    "name": "eligible current vendor",
+    "expected": "ACTIVE",
+    "observation": {
+      "scope": "candidate_evaluation",
+      "subject": "Delta",
+      "is_complete": true,
+      "eligible": true,
+      "active_reason": "Delta is eligible and needed in the current comparison."
+    }
+  },
+  {
+    "name": "unfinished comparison",
+    "expected": "ACTIVE",
+    "observation": {
+      "scope": "task_state",
+      "is_complete": false,
+      "active_reason": "The comparison still has unanswered research questions."
+    }
+  },
+  {
+    "name": "repeated cookie banner",
+    "expected": "DISCARD",
+    "observation": {
+      "scope": "noise",
+      "discard_reason": "Repeated website boilerplate is not useful memory."
+    }
+  },
+  {
+    "name": "irrelevant logo color",
+    "expected": "DISCARD",
+    "observation": {
+      "scope": "candidate_evaluation",
+      "is_complete": true,
+      "is_relevant": false,
+      "discard_reason": "Logo color does not affect the selection criteria."
+    }
+  }
+]

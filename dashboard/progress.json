@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:04:19Z",
-  "focus": "Make memory decisions reliable",
-  "summary": "The connections work. We are testing a stronger Liquid model before building the automatic memory loop.",
+  "updatedAt": "2026-09-25T20:09:02Z",
+  "focus": "Validate every memory decision",
+  "summary": "The deterministic memory gate passes all eight representative cases. Strict boundary validation is next.",
   "milestones": [
     {
       "id": "setup",
@@ -13,9 +13,9 @@
     {
       "id": "gate",
       "title": "Teach the memory gate",
-      "detail": "Validate ACTIVE, DURABLE, SPORE, and DISCARD decisions on representative observations.",
+      "detail": "The four-state policy passes 8/8 representative cases. Strict model-output validation is the remaining work in this milestone.",
       "status": "active",
-      "owner": "In progress"
+      "owner": "Policy complete"
     },
     {
       "id": "storage",
@@ -60,9 +60,15 @@
   },
   "activity": [
     {
+      "time": "2026-09-25T20:09:02Z",
+      "title": "Deterministic memory gate complete",
+      "detail": "ACTIVE, DURABLE, SPORE, and DISCARD policy passed all eight representative project cases.",
+      "type": "success"
+    },
+    {
       "time": "2026-09-25T20:04:19Z",
       "title": "Development baseline finalized",
-      "detail": "Added repository checks, local readiness diagnostics, CI, and a continuation handoff without exposing credentials.",
+      "detail": "Added repository checks, local readiness diagnostics, and a continuation handoff without exposing credentials.",
       "type": "success"
     },
     {

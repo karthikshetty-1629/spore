@@ -8,8 +8,9 @@
     "dev": "node dashboard/server.mjs",
     "start": "node dashboard/server.mjs",
     "doctor": "node scripts/doctor.mjs",
-    "check": "node --check dashboard/server.mjs && node --check dashboard/public/app.js && node --check scripts/doctor.mjs && node scripts/validate-repo.mjs && PYTHONPYCACHEPREFIX=/tmp/spore-pycache python3 -m py_compile scripts/evaluate_models.py",
-    "test": "npm run check"
+    "gate:demo": "node scripts/demo-gate.mjs",
+    "check": "node --check dashboard/server.mjs && node --check dashboard/public/app.js && node --check scripts/doctor.mjs && node --check scripts/demo-gate.mjs && node --check src/memory/policy.mjs && node scripts/validate-repo.mjs && PYTHONPYCACHEPREFIX=/tmp/spore-pycache python3 -m py_compile scripts/evaluate_models.py && node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
