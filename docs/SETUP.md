@@ -1,6 +1,17 @@
 # SPORE setup checklist
 
-This checklist separates account setup from implementation. Nimble and RawTree access have been verified; Liquid model quality is being evaluated locally.
+This checklist separates account setup from implementation. Nimble and RawTree access have been verified. Liquid models run locally, with deterministic validation selected for the memory gate after the initial model evaluation.
+
+## 0. Verify the repository baseline
+
+From the repository root, run:
+
+```sh
+npm run doctor
+npm run check
+```
+
+`doctor` checks local files, environment-variable presence, Ollama availability, and installed Liquid models without printing secret values or calling paid remote services. `check` validates JavaScript, Python syntax, JSON structure, and repository invariants.
 
 ## 1. Event access
 
@@ -39,7 +50,13 @@ The documented local runtime is Ollama. Install and open [Ollama for macOS](http
 ollama pull hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF
 ```
 
-This is the fast baseline. Larger Liquid models can also run through Ollama, but each candidate must be tested for schema compliance, latency, and decision quality before selection. The local option does not require paid inference credits.
+This is the fast extraction baseline. Also install the larger model selected for post-wake reevaluation:
+
+```sh
+ollama pull hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF
+```
+
+The initial evaluation showed that all model output must pass deterministic policy and schema validation. The 2.6B reasoning model is not selected for the live gate. The local option does not require paid inference credits.
 
 References: [model library](https://docs.liquid.ai/lfm/models/complete-library), [official Ollama guide](https://docs.liquid.ai/deployment/on-device/ollama).
 

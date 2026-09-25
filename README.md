@@ -8,7 +8,11 @@ SPORE is a hackathon project exploring conditional memory for long-running agent
 
 ## Current status
 
-The local build observatory is running, and live connection checks have verified Nimble search and RawTree event write/read access. Liquid models run locally through Ollama; memory-decision quality is still being evaluated. The autonomous agent loop remains the next implementation milestone.
+The repository is a finalized development baseline. The local build observatory runs, live connection checks have verified Nimble search and RawTree event write/read access, and three Liquid models are available locally through Ollama.
+
+The first memory-gate evaluation showed that an LLM cannot safely own lifecycle decisions by itself: the 1.2B instruct model passed 1/8 strict cases, the 2.6B reasoning model did not produce usable short structured responses, and the 8B-A1B model understood the SPORE case but still omitted a required trigger field. The implementation will therefore combine Liquid-assisted extraction with a deterministic policy, schema validation, and fail-closed behavior.
+
+The autonomous memory lifecycle remains the next implementation milestone. See [the continuation handoff](docs/HANDOFF.md) for the exact build order and acceptance criteria.
 
 ## Intended demonstration
 
@@ -24,7 +28,7 @@ The demo must distinguish real observations from fixtures or historical replay. 
 
 | Service | Role | Status |
 | --- | --- | --- |
-| Liquid AI | Structured memory decisions and wake conditions | Connected locally; quality evaluation in progress |
+| Liquid AI | Structured extraction and post-wake reevaluation | Three local models installed; gate requires deterministic validation |
 | Nimble | Live web research and condition checks | Connection verified |
 | Tinybird / RawTree | Memory lifecycle events and analytics | Write/read verified |
 | AWS | Agent inference and persistent storage | Optional; local substitutes selected |
@@ -34,6 +38,13 @@ The initial goal is one complete loop with a narrow trigger type. Infrastructure
 ## Setup
 
 See [the setup checklist](docs/SETUP.md). Copy `.env.example` to `.env` for local settings. `.env` and runtime data are excluded from Git.
+
+Verify the local development environment without spending remote API credits:
+
+```sh
+npm run doctor
+npm run check
+```
 
 Run the local build observatory:
 

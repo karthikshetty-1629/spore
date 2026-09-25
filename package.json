@@ -1,5 +1,21 @@
 {
-  "name": "spore", "private": true, "version": "0.1.0", "type": "module",
-  "scripts": {"dev": "node dashboard/server.mjs", "start": "node dashboard/server.mjs", "check": "node --check dashboard/server.mjs && node --check dashboard/public/app.js"},
-  "engines": {"node": ">=20"}
+  "name": "spore",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Semantic Persistence and On-demand Rehydration Engine",
+  "type": "module",
+  "scripts": {
+    "dev": "node dashboard/server.mjs",
+    "start": "node dashboard/server.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "check": "node --check dashboard/server.mjs && node --check dashboard/public/app.js && node --check scripts/doctor.mjs && node scripts/validate-repo.mjs && PYTHONPYCACHEPREFIX=/tmp/spore-pycache python3 -m py_compile scripts/evaluate_models.py",
+    "test": "npm run check"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/karthikshetty-1629/spore.git"
+  }
 }
