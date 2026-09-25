@@ -92,12 +92,36 @@ export class SporeDatabase {
         on_wake TEXT NOT NULL,
         confidence REAL CHECK (confidence IS NULL OR (confidence >= 0 AND confidence <= 1)),
         created_at TEXT NOT NULL,
-        awakened_at TEXT
+        awakened_at TEXT,
+        rehydrated_at TEXT,
+        acted_at TEXT
       );
 
       CREATE INDEX IF NOT EXISTS spores_due_idx ON spores(status, next_check_at);
-      PRAGMA user_version = 1;
+
+      CREATE TABLE IF NOT EXISTS shortlist (
+        run_id TEXT NOT NULL REFERENCES runs(run_id) ON DELETE CASCADE,
+        subject TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        evidence_json TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (run_id, subject)
+      );
+
+      CREATE TABLE IF NOT EXISTS agent_actions (
+        action_id TEXT PRIMARY KEY,
+        run_id TEXT NOT NULL REFERENCES runs(run_id) ON DELETE CASCADE,
+        spore_id TEXT NOT NULL UNIQUE REFERENCES spores(spore_id) ON DELETE CASCADE,
+        subject TEXT NOT NULL,
+        action_type TEXT NOT NULL CHECK (action_type IN ('candidate_shortlisted', 'candidate_rejected')),
+        result_json TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
     `);
+    const columns = new Set(this.database.prepare('PRAGMA table_info(spores)').all().map((row) => row.name));
+    if (!columns.has('rehydrated_at')) this.database.exec('ALTER TABLE spores ADD COLUMN rehydrated_at TEXT');
+    if (!columns.has('acted_at')) this.database.exec('ALTER TABLE spores ADD COLUMN acted_at TEXT');
+    this.database.exec('PRAGMA user_version = 2;');
   }
 
   createRun({ run_id, goal, status = 'RUNNING', started_at = new Date().toISOString() }) {
@@ -263,6 +287,64 @@ export class SporeDatabase {
     return Number(result.changes) === 1;
   }
 
+  saveShortlistEntry({ run_id, subject, reason, evidence, updated_at = new Date().toISOString() }) {
+    this.database.prepare(`
+      INSERT INTO shortlist (run_id, subject, reason, evidence_json, updated_at)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(run_id, subject) DO UPDATE SET
+        reason = excluded.reason,
+        evidence_json = excluded.evidence_json,
+        updated_at = excluded.updated_at
+    `).run(
+      requiredString(run_id, 'run_id'),
+      requiredString(subject, 'subject'),
+      requiredString(reason, 'reason'),
+      encode(evidence),
+      timestamp(updated_at),
+    );
+    return this.getShortlistEntry(run_id, subject);
+  }
+
+  getShortlistEntry(runId, subject) {
+    const row = this.database.prepare('SELECT * FROM shortlist WHERE run_id = ? AND subject = ?').get(runId, subject);
+    return row ? { ...row, evidence: decode(row.evidence_json), evidence_json: undefined } : null;
+  }
+
+  listShortlist(runId) {
+    return this.database.prepare('SELECT * FROM shortlist WHERE run_id = ? ORDER BY subject').all(runId)
+      .map((row) => ({ ...row, evidence: decode(row.evidence_json), evidence_json: undefined }));
+  }
+
+  recordAgentAction({ action_id, run_id, spore_id, subject, action_type, result, created_at }) {
+    this.database.prepare(`
+      INSERT INTO agent_actions (action_id, run_id, spore_id, subject, action_type, result_json, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      requiredString(action_id, 'action_id'),
+      requiredString(run_id, 'run_id'),
+      requiredString(spore_id, 'spore_id'),
+      requiredString(subject, 'subject'),
+      requiredString(action_type, 'action_type'),
+      encode(result),
+      timestamp(created_at),
+    );
+  }
+
+  getActionForSpore(sporeId) {
+    const row = this.database.prepare('SELECT * FROM agent_actions WHERE spore_id = ?').get(sporeId);
+    return row ? { ...row, result: decode(row.result_json), result_json: undefined } : null;
+  }
+
+  markSporeActed(sporeId, { acted_at }) {
+    const at = timestamp(acted_at);
+    const result = this.database.prepare(`
+      UPDATE spores
+      SET rehydrated_at = ?, acted_at = ?
+      WHERE spore_id = ? AND status = 'AWAKENED' AND acted_at IS NULL
+    `).run(at, at, sporeId);
+    return Number(result.changes) === 1;
+  }
+
   counts() {
     const count = (table) => this.database.prepare(`SELECT COUNT(*) AS count FROM ${table}`).get().count;
     return {
@@ -270,6 +352,8 @@ export class SporeDatabase {
       working: count('working_memories'),
       durable: count('durable_memories'),
       spores: count('spores'),
+      shortlist: count('shortlist'),
+      actions: count('agent_actions'),
     };
   }
 

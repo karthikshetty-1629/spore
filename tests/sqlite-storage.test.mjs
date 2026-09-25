@@ -49,7 +49,7 @@ function seed(database) {
 
 test('creates the versioned storage schema', () => {
   const database = new SporeDatabase();
-  assert.equal(database.database.prepare('PRAGMA user_version').get().user_version, 1);
+  assert.equal(database.database.prepare('PRAGMA user_version').get().user_version, 2);
   database.close();
 });
 
@@ -57,7 +57,7 @@ test('stores and restores every memory class across database reopening', async (
   const filename = await databaseFile(t);
   const first = new SporeDatabase(filename);
   seed(first);
-  assert.deepEqual(first.counts(), { runs: 1, working: 1, durable: 1, spores: 1 });
+  assert.deepEqual(first.counts(), { runs: 1, working: 1, durable: 1, spores: 1, shortlist: 0, actions: 0 });
   first.close();
 
   const reopened = new SporeDatabase(filename);
@@ -86,7 +86,7 @@ test('upserts working memory without duplicating it', () => {
     token_count: 24,
     updated_at: later,
   });
-  assert.deepEqual(database.counts(), { runs: 1, working: 1, durable: 1, spores: 1 });
+  assert.deepEqual(database.counts(), { runs: 1, working: 1, durable: 1, spores: 1, shortlist: 0, actions: 0 });
   assert.equal(database.getWorkingMemory('active_001').token_count, 24);
   assert.deepEqual(database.getWorkingMemory('active_001').payload, { state: 'shortlisted' });
   database.close();

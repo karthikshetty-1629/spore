@@ -35,7 +35,8 @@ The required demonstration is: the agent forgets something, the world changes, t
 - SQLite persistence for runs, working memory, durable memory, and spores is implemented in `src/storage/sqlite.mjs`; the default application path is `data/spore.sqlite`.
 - Integrity-checked evidence archiving and transactional working-context removal are implemented in `src/storage/archive.mjs` and `src/memory/lifecycle.mjs`.
 - The bounded Nimble adapter, typed condition evaluator, and autonomous idempotent watcher are implemented under `src/integrations` and `src/watcher`.
-- Rehydration, agent action, and RawTree lifecycle telemetry are not implemented yet.
+- Archived context rehydration, strict Liquid reevaluation support, deterministic reevaluation, idempotent action logging, and persistent shortlist updates are implemented under `src/agent`.
+- RawTree lifecycle telemetry and the polished end-to-end demo are not implemented yet.
 
 ## Model evidence
 
@@ -62,7 +63,7 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: memory compilation, persistence, archive-and-forget, Nimble search, condition evaluation, and autonomous waking are complete. Rehydration and agent action are next.
+Current position: the complete local lifecycle through rehydration and agent action is implemented. RawTree lifecycle telemetry is next.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.
@@ -70,7 +71,7 @@ Current position: memory compilation, persistence, archive-and-forget, Nimble se
 4. Completed: bounded Nimble search adapter returning normalized evidence with URLs.
 5. Wrap RawTree writes in an append-only lifecycle event adapter.
 6. Completed: scheduler, due-spore query, typed condition evaluator, retry isolation, and idempotent waking.
-7. Rehydrate archived rationale with fresh evidence, reevaluate the provider, and update a shortlist.
+7. Completed: rehydrate archived rationale with fresh evidence, reevaluate the provider, and update a shortlist exactly once.
 8. Add a resettable end-to-end scenario using clearly labeled Day 1 / Day 60 fixtures.
 9. Replace or supplement the replay sensor with live Nimble evidence.
 10. Feed actual lifecycle data and measured context reduction into the existing dashboard.

@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:26:14Z",
-  "focus": "Rehydrate memory and act",
-  "summary": "The scheduled watcher can check due SPOREs and wake matching memories once. Rehydration and action are next.",
+  "updatedAt": "2026-09-25T20:31:19Z",
+  "focus": "Record the full lifecycle",
+  "summary": "SPORE can now archive, wake, rehydrate, reevaluate, and update a shortlist. RawTree lifecycle telemetry is next.",
   "milestones": [
     {
       "id": "setup",
@@ -34,16 +34,16 @@
     {
       "id": "action",
       "title": "Let the agent act again",
-      "detail": "Recover historical rationale, combine fresh evidence, reevaluate the provider, and update the shortlist.",
-      "status": "active",
-      "owner": "Next step"
+      "detail": "Archived rationale and fresh evidence are combined, reevaluated, and applied to a persistent shortlist exactly once.",
+      "status": "done",
+      "owner": "Complete"
     },
     {
       "id": "demo",
       "title": "Prove it in three minutes",
-      "detail": "Measure context reduction, rehearse one complete story, record the video, and submit.",
-      "status": "pending",
-      "owner": "Final milestone"
+      "detail": "Add RawTree lifecycle telemetry, measure context reduction, rehearse, record the video, and submit.",
+      "status": "active",
+      "owner": "Next step"
     }
   ],
   "checks": {
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T20:31:19Z",
+      "title": "Rehydration and agent action complete",
+      "detail": "Historical rationale and fresh evidence can now restore a provider, reevaluate it, and update the shortlist exactly once.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T20:26:14Z",
       "title": "Autonomous watcher complete",
