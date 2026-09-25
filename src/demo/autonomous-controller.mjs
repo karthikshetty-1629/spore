@@ -12,6 +12,7 @@ import { createLifecycleEvent } from '../telemetry/events.mjs';
 import { summarizeLifecycle } from '../telemetry/metrics.mjs';
 import { BufferedTelemetrySink } from '../telemetry/sink.mjs';
 import { AutonomousWatcher } from '../watcher/watcher.mjs';
+import { buildHistoricalDossier } from './historical-dossier.mjs';
 
 const DEFAULT_GOAL = 'Monitor the OpenAI Responses API and shortlist it when official API reference documentation is available.';
 const MEMORY_ID = 'memory_responses_api_checkpoint';
@@ -135,13 +136,7 @@ export class AutonomousDemoController {
       await this.phase(state, 'plan', 'complete', `Liquid created ${plan.search_queries.length} research queries and a typed wake condition.`);
 
       await this.phase(state, 'checkpoint', 'running', `Loading the dated ${HISTORICAL_DATE} checkpoint.`);
-      const payload = {
-        scenario: 'Time-compressed audit of a real product transition. The checkpoint predates the public launch of the Responses API; the watcher evaluates present-day official evidence.',
-        historical_checkpoint: { date: HISTORICAL_DATE, evidence_mode: 'historical_checkpoint', api_documentation_available: false },
-        requirements: [plan.wake_condition], observed_facts: { api_documentation_available: false },
-        research_plan: plan, research_notes: ['Preserve the dated rationale outside active context.', 'Wake only from current official-domain evidence.', 'On wake, restore the checkpoint and independently reevaluate eligibility.'],
-        source_urls: ['https://openai.com/index/new-tools-for-building-agents/'],
-      };
+      const payload = buildHistoricalDossier(plan, HISTORICAL_DATE);
       const tokenCount = estimateTokens(payload);
       database.saveWorkingMemory({ memory_id: MEMORY_ID, run_id: state.run_id, subject: plan.subject, payload, token_count: tokenCount, updated_at: this.clock().toISOString() });
       this.record(state, 'observation_created', { subject: plan.subject, evidence_mode: 'historical_checkpoint', source_count: 1, details: { checkpoint_date: HISTORICAL_DATE, token_count: tokenCount } });

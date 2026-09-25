@@ -5,6 +5,14 @@ import path from 'node:path';
 import test from 'node:test';
 
 import { AutonomousDemoController } from '../src/demo/autonomous-controller.mjs';
+import { buildHistoricalDossier } from '../src/demo/historical-dossier.mjs';
+
+test('historical dossier represents a meaningful amount of releasable context', () => {
+  const plan = { wake_condition: { attribute: 'api_documentation_available', operator: '==', target: true } };
+  const dossier = buildHistoricalDossier(plan);
+  const estimatedTokens = Math.ceil(Buffer.byteLength(JSON.stringify(dossier)) / 4);
+  assert.ok(estimatedTokens >= 2_000, `expected at least 2,000 estimated tokens, received ${estimatedTokens}`);
+});
 
 test('one command plans, scouts, schedules, wakes, acts, and verifies telemetry', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'spore-autonomous-'));
@@ -44,6 +52,7 @@ test('one command plans, scouts, schedules, wakes, acts, and verifies telemetry'
     assert.equal(snapshot.storage.spore.status, 'AWAKENED');
     assert.equal(snapshot.storage.counts.shortlist, 1);
     assert.equal(snapshot.telemetry.remote_verified, true);
+    assert.ok(snapshot.archive.tokens_removed >= 2_000);
     assert.equal(snapshot.evidence_assessment.provenance_guard, true);
     assert.ok(snapshot.phases.every((phase) => phase.status === 'complete'));
   } finally {
