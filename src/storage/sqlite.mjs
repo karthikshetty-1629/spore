@@ -139,6 +139,15 @@ export class SporeDatabase {
     return { ...row, summary: decode(row.summary_json), summary_json: undefined };
   }
 
+  completeRun(runId, { status = 'COMPLETED', summary = {}, completed_at = new Date().toISOString() } = {}) {
+    if (!RUN_STATUSES.has(status) || status === 'RUNNING') throw new TypeError('completed run status is invalid');
+    const result = this.database.prepare(`
+      UPDATE runs SET status = ?, completed_at = ?, summary_json = ? WHERE run_id = ?
+    `).run(status, timestamp(completed_at), encode(summary), requiredString(runId, 'run_id'));
+    if (Number(result.changes) !== 1) throw new Error(`run not found: ${runId}`);
+    return this.getRun(runId);
+  }
+
   saveWorkingMemory({ memory_id, run_id, subject = null, payload, token_count = 0, updated_at = new Date().toISOString() }) {
     if (!Number.isInteger(token_count) || token_count < 0) throw new TypeError('token_count must be a non-negative integer');
     this.database.prepare(`

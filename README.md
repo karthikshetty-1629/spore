@@ -12,15 +12,17 @@ The repository is a finalized development baseline. The local build observatory 
 
 The first memory-gate evaluation showed that an LLM cannot safely own lifecycle decisions by itself: the 1.2B instruct model passed 1/8 strict cases, the 2.6B reasoning model did not produce usable short structured responses, and the 8B-A1B model understood the SPORE case but still omitted a required trigger field. The implementation will therefore combine Liquid-assisted extraction with a deterministic policy, schema validation, and fail-closed behavior.
 
-The project now implements the complete local memory lifecycle: validated classification, SQLite persistence, integrity-checked archive-and-forget, scheduled Nimble condition checks, idempotent waking, context rehydration, provider reevaluation, a persistent shortlist action, and RawTree lifecycle telemetry with disk-backed retry. A guided one-screen demo console runs every stage against a persistent SQLite database, labels replay versus live evidence, shows sponsor-tool progress, and exposes the equivalent command and verification links. Demo rehearsal, recording, and submission remain. See [the continuation handoff](docs/HANDOFF.md) for acceptance criteria.
+The project now implements the complete autonomous memory lifecycle: Liquid plans a bounded research task, Nimble executes multiple live searches, a guarded Liquid evidence assessment cites official sources, the deterministic gate creates a dormant SPORE, and `AutonomousWatcher.start()` runs the due check without a wake button. The agent then rehydrates its archived rationale, makes a guarded Liquid decision, updates its persistent shortlist, and sends the lifecycle to RawTree for read-back verification.
+
+The local dashboard starts that entire flow from one goal. A separate explain mode still exposes individual components. A read-only public proof site is generated from the latest verified run so visitors cannot access credentials or spend trial credits.
 
 ## Intended demonstration
 
-1. A technology scout researches providers against an integration goal.
-2. The memory gate classifies observations as ACTIVE, DURABLE, SPORE, or DISCARD.
-3. A provider blocked by a missing public API becomes a dormant SPORE; its detailed evidence leaves active context and is archived.
-4. A scheduled watcher uses fresh web evidence to evaluate the stored wake condition.
-5. When the condition is satisfied, the agent combines archived rationale with fresh evidence, reevaluates the provider, and updates its candidate list.
+1. The user gives the scout one monitoring goal.
+2. Liquid creates a structured plan with multiple searches, official domains, and a typed wake condition.
+3. The memory gate turns a dated historical checkpoint into a dormant SPORE and removes its detailed payload from working context.
+4. The scheduler starts itself; Nimble researches the live web and Liquid assesses the results behind an official-source guard.
+5. When the condition is satisfied, the agent restores archived rationale, reevaluates the provider with Liquid, updates its shortlist exactly once, and verifies its RawTree audit trail.
 
 The demo must distinguish real observations from fixtures or historical replay. A manual wake button does not establish autonomous detection. All context savings and usefulness metrics must be measured, not hard-coded as results.
 
@@ -94,7 +96,7 @@ Run the local build observatory:
 npm run dev
 ```
 
-Then open `http://127.0.0.1:4317`. The page reports recorded milestones and checks live Ollama health; it does not expose credentials.
+Then open `http://127.0.0.1:4317`. The page reports recorded milestones and checks live Ollama health; it does not expose credentials. Enter the default goal and click **Start autonomous agent** once. The remaining phases run without stage buttons.
 
 The guided demo is the first section on that page. Click **Reset demonstration**, then run its seven numbered buttons in order. It persists inspectable state in `data/spore-demo.sqlite` and detailed evidence in `data/spore-demo-archives/`. The same stages can be run from a terminal:
 
@@ -110,6 +112,14 @@ npm run demo -- telemetry
 ```
 
 `wake-live` uses one Nimble search. `wake-replay` is the labeled, repeatable alternative. The final telemetry stage sends one labeled batch to RawTree and verifies it by read-back.
+
+Generate the read-only GitHub Pages proof from the latest successful run:
+
+```sh
+npm run site:build
+```
+
+The generated `docs/` site contains sanitized run evidence and no credentials or writable API routes.
 
 ## Event
 

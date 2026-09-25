@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { GuidedDemoController } from '../src/demo/controller.mjs';
+import { AutonomousDemoController } from '../src/demo/autonomous-controller.mjs';
 import { LiquidReevaluationClient } from '../src/integrations/liquid.mjs';
 import { NimbleSearchClient } from '../src/integrations/nimble.mjs';
 import { RawTreeClient } from '../src/integrations/rawtree.mjs';
@@ -15,6 +16,7 @@ const runtimePath = path.join(root, 'data/dashboard-checks.json');
 const telemetryPath = path.join(root, 'data/telemetry-summary.json');
 let busy = false;
 let demoJob = { busy: false, action: '', message: '', error: '', finishedAt: null };
+let autonomousJob = { busy: false, message: '', error: '', finishedAt: null };
 async function readJSON(file, fallback) { try { return JSON.parse(await readFile(file, 'utf8')); } catch { return fallback; } }
 async function config() {
   const text = await readFile(path.join(root, '.env'), 'utf8').catch(() => '');
@@ -26,22 +28,47 @@ async function jsonRequest(url, body, key, timeout = 15000) {
   return response.json();
 }
 async function status() {
-  const [cfg, progress, checks, evaluation, telemetry, demo] = await Promise.all([config(), readJSON(progressPath, {}), readJSON(runtimePath, {}), readJSON(path.join(root,'data/model-evaluation.json'), null), readJSON(telemetryPath, null), new GuidedDemoController({root}).snapshot()]);
+  const [cfg, progress, checks, evaluation, telemetry, demo, autonomous] = await Promise.all([config(), readJSON(progressPath, {}), readJSON(runtimePath, {}), readJSON(path.join(root,'data/model-evaluation.json'), null), readJSON(telemetryPath, null), new GuidedDemoController({root}).snapshot(), new AutonomousDemoController({root}).snapshot()]);
   let ollama = {online:false, installed:[], modelAvailable:false};
   try { const tags = await jsonRequest('http://127.0.0.1:11434/api/tags', null, null, 2000); const installed = tags.models.map(m=>m.name); ollama = {online:true, installed, modelAvailable:installed.some(n=>n===cfg.LIQUID_MODEL || n===cfg.LIQUID_MODEL+':latest')}; } catch {}
-  return {...progress,checks:{...progress.checks,...checks},evaluation,telemetry,demo:{...demo,job:demoJob},ollama, busy, serverTime:new Date().toISOString(), config:{nimble:!!cfg.NIMBLE_API_KEY, rawtree:!!cfg.RAWTREE_API_KEY, database:cfg.RAWTREE_DATABASE || 'default', model:cfg.LIQUID_MODEL || 'Not configured'}, source:'Local project status + persistent guided demo + measured lifecycle telemetry + live Ollama check'};
+  return {...progress,checks:{...progress.checks,...checks},evaluation,telemetry,demo:{...demo,job:demoJob},autonomous:{...autonomous,job:autonomousJob},ollama, busy, serverTime:new Date().toISOString(), config:{nimble:!!cfg.NIMBLE_API_KEY, rawtree:!!cfg.RAWTREE_API_KEY, database:cfg.RAWTREE_DATABASE || 'default', model:cfg.LIQUID_MODEL || 'Not configured'}, source:'Local project status + autonomous agent run + measured lifecycle telemetry + live Ollama check'};
+}
+
+function clients(cfg) {
+  return {
+    nimbleClient: cfg.NIMBLE_API_KEY ? new NimbleSearchClient({ apiKey: cfg.NIMBLE_API_KEY }) : null,
+    rawtreeClient: cfg.RAWTREE_API_KEY ? new RawTreeClient({ apiKey: cfg.RAWTREE_API_KEY, database: cfg.RAWTREE_DATABASE || 'default', baseUrl: cfg.RAWTREE_BASE_URL || 'https://api.rawtree.com' }) : null,
+    liquidClient: new LiquidReevaluationClient({ baseUrl: cfg.LIQUID_BASE_URL || 'http://127.0.0.1:11434/v1', model: cfg.LIQUID_REEVALUATION_MODEL || cfg.LIQUID_MODEL, apiMode: 'ollama' }),
+  };
+}
+
+async function runAutonomous(goal) {
+  autonomousJob = { busy: true, message: 'The autonomous agent is working…', error: '', finishedAt: null };
+  try {
+    const cfg = await config();
+    const controller = new AutonomousDemoController({ root, ...clients(cfg) });
+    await controller.run(goal);
+    autonomousJob = { busy: false, message: 'Autonomous run completed', error: '', finishedAt: new Date().toISOString() };
+  } catch (error) {
+    autonomousJob = { busy: false, message: '', error: error.message, finishedAt: new Date().toISOString() };
+  }
+}
+
+async function readBody(req, limit = 10_000) {
+  let body = '';
+  for await (const chunk of req) {
+    body += chunk;
+    if (body.length > limit) throw new Error('Request body is too large.');
+  }
+  return body ? JSON.parse(body) : {};
 }
 
 async function runDemoAction(action) {
   demoJob = { busy: true, action, message: `Running ${action.replace('-', ' ')}…`, error: '', finishedAt: null };
   try {
     const cfg = await config();
-    const controller = new GuidedDemoController({
-      root,
-      nimbleClient: cfg.NIMBLE_API_KEY ? new NimbleSearchClient({ apiKey: cfg.NIMBLE_API_KEY }) : null,
-      rawtreeClient: cfg.RAWTREE_API_KEY ? new RawTreeClient({ apiKey: cfg.RAWTREE_API_KEY, database: cfg.RAWTREE_DATABASE || 'default', baseUrl: cfg.RAWTREE_BASE_URL || 'https://api.rawtree.com' }) : null,
-      reevaluator: new LiquidReevaluationClient({ baseUrl: cfg.LIQUID_BASE_URL || 'http://127.0.0.1:11434/v1', model: cfg.LIQUID_REEVALUATION_MODEL || cfg.LIQUID_MODEL, apiMode: 'ollama' }),
-    });
+    const configured = clients(cfg);
+    const controller = new GuidedDemoController({ root, nimbleClient: configured.nimbleClient, rawtreeClient: configured.rawtreeClient, reevaluator: configured.liquidClient });
     await controller.run(action);
     demoJob = { busy: false, action, message: `${action.replace('-', ' ')} completed`, error: '', finishedAt: new Date().toISOString() };
   } catch (error) {
@@ -69,6 +96,19 @@ http.createServer(async(req,res)=> {
   try {
     const url = new URL(req.url,origin);
     if(req.method==='GET' && url.pathname==='/api/status') return send(200,await status());
+    if(req.method==='POST' && url.pathname==='/api/autonomous/start') {
+      if(![origin,`http://localhost:${port}`].includes(req.headers.origin)) return send(403,{error:'Same-origin request required.'});
+      if(autonomousJob.busy) return send(409,{error:'The autonomous agent is already running.'});
+      const body=await readBody(req);
+      runAutonomous(body.goal).catch(()=>{}); return send(202,{started:true});
+    }
+    if(req.method==='POST' && url.pathname==='/api/autonomous/reset') {
+      if(![origin,`http://localhost:${port}`].includes(req.headers.origin)) return send(403,{error:'Same-origin request required.'});
+      if(autonomousJob.busy) return send(409,{error:'Wait for the current autonomous run to finish.'});
+      await new AutonomousDemoController({root}).reset();
+      autonomousJob={busy:false,message:'Autonomous demonstration reset',error:'',finishedAt:new Date().toISOString()};
+      return send(200,{reset:true});
+    }
     if(req.method==='POST' && url.pathname.startsWith('/api/demo/')) {
       if(![origin,`http://localhost:${port}`].includes(req.headers.origin)) return send(403,{error:'Same-origin request required.'});
       if(demoJob.busy) return send(409,{error:'A demo step is already running.'});

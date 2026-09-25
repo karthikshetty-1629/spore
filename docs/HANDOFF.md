@@ -65,7 +65,7 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the complete lifecycle is available as a seven-stage guided UI and CLI. Live Nimble waking, validated local Liquid reevaluation, and RawTree read-back have each been verified. Rehearsal, recording, and submission are next.
+Current position: the complete lifecycle runs autonomously from one goal in the dashboard. A verified live run used Liquid for planning, evidence analysis, and the final decision; Nimble returned nine live sources across three queries; the official-source guard accepted two Responses API references; `AutonomousWatcher.start()` woke the spore; and RawTree read back all eleven events. Rehearsal, recording, and submission are next.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.
@@ -75,9 +75,10 @@ Current position: the complete lifecycle is available as a seven-stage guided UI
 6. Completed: scheduler, due-spore query, typed condition evaluator, retry isolation, and idempotent waking.
 7. Completed: rehydrate archived rationale with fresh evidence, reevaluate the provider, and update a shortlist exactly once.
 8. Completed: resettable end-to-end scenario using clearly labeled historical replay evidence.
-9. Replace or supplement the replay sensor with live Nimble evidence.
+9. Completed: live multi-query Nimble scouting with Liquid assessment and official-domain citation validation.
 10. Completed: feed actual lifecycle data and measured context reduction into the existing dashboard.
-11. Rehearse twice, record a three-minute demo, and submit.
+11. Completed: generate a sanitized read-only public proof site from the verified run.
+12. Rehearse twice, record a three-minute demo, and submit.
 
 ## Initial regression cases
 

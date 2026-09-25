@@ -1,0 +1,328 @@
+{
+  "generated_at": "2026-09-25T22:10:41.385Z",
+  "status": "complete",
+  "goal": "Monitor the OpenAI Responses API and shortlist it when official API reference documentation is available.",
+  "run_id": "auto_20260925220622",
+  "started_at": "2026-09-25T22:06:22.908Z",
+  "completed_at": "2026-09-25T22:07:23.984Z",
+  "phases": [
+    {
+      "id": "plan",
+      "tool": "Liquid AI",
+      "title": "Plan the goal",
+      "status": "complete"
+    },
+    {
+      "id": "checkpoint",
+      "tool": "SQLite",
+      "title": "Load historical checkpoint",
+      "status": "complete"
+    },
+    {
+      "id": "classify",
+      "tool": "SPORE gate",
+      "title": "Classify memory",
+      "status": "complete"
+    },
+    {
+      "id": "sleep",
+      "tool": "Archive + SQLite",
+      "title": "Archive and release context",
+      "status": "complete"
+    },
+    {
+      "id": "watch",
+      "tool": "Scheduler",
+      "title": "Start background watcher",
+      "status": "complete"
+    },
+    {
+      "id": "scout",
+      "tool": "Nimble + Liquid AI",
+      "title": "Research and assess live evidence",
+      "status": "complete"
+    },
+    {
+      "id": "rehydrate",
+      "tool": "Archive",
+      "title": "Restore historical context",
+      "status": "complete"
+    },
+    {
+      "id": "act",
+      "tool": "Liquid AI + guard",
+      "title": "Decide and update shortlist",
+      "status": "complete"
+    },
+    {
+      "id": "telemetry",
+      "tool": "RawTree",
+      "title": "Publish and verify proof",
+      "status": "complete"
+    }
+  ],
+  "timeline": [
+    {
+      "phase": "telemetry",
+      "tool": "RawTree",
+      "detail": "RawTree returned all 11 lifecycle events.",
+      "timestamp": "2026-09-25T22:07:23.982Z"
+    },
+    {
+      "phase": "telemetry",
+      "tool": "RawTree",
+      "detail": "Publishing the complete lifecycle to RawTree and reading it back.",
+      "timestamp": "2026-09-25T22:07:22.876Z"
+    },
+    {
+      "phase": "act",
+      "tool": "Liquid AI + guard",
+      "detail": "The agent independently completed candidate_shortlisted.",
+      "timestamp": "2026-09-25T22:07:22.874Z"
+    },
+    {
+      "phase": "act",
+      "tool": "Liquid AI + guard",
+      "detail": "Liquid is deciding the action from restored context; the deterministic guard will fail closed on disagreement.",
+      "timestamp": "2026-09-25T22:07:13.760Z"
+    },
+    {
+      "phase": "rehydrate",
+      "tool": "Archive",
+      "detail": "The SHA-256 checksum passed and historical plus fresh context was reconstructed.",
+      "timestamp": "2026-09-25T22:07:13.759Z"
+    },
+    {
+      "phase": "rehydrate",
+      "tool": "Archive",
+      "detail": "Verifying archive integrity and restoring the dated rationale.",
+      "timestamp": "2026-09-25T22:07:13.757Z"
+    },
+    {
+      "phase": "scout",
+      "tool": "Nimble + Liquid AI",
+      "detail": "Liquid analyzed 9 results; the source guard accepted 2 official result(s).",
+      "timestamp": "2026-09-25T22:07:13.752Z"
+    },
+    {
+      "phase": "watch",
+      "tool": "Scheduler",
+      "detail": "AutonomousWatcher.start() is active and immediately ran the due check.",
+      "timestamp": "2026-09-25T22:06:40.169Z"
+    },
+    {
+      "phase": "scout",
+      "tool": "Nimble + Liquid AI",
+      "detail": "Nimble is running 3 live searches.",
+      "timestamp": "2026-09-25T22:06:40.169Z"
+    },
+    {
+      "phase": "watch",
+      "tool": "Scheduler",
+      "detail": "The scheduler is starting itself; no wake button is involved.",
+      "timestamp": "2026-09-25T22:06:40.168Z"
+    },
+    {
+      "phase": "sleep",
+      "tool": "Archive + SQLite",
+      "detail": "The working-memory row was removed only after the checksum-protected archive was saved.",
+      "timestamp": "2026-09-25T22:06:40.167Z"
+    },
+    {
+      "phase": "sleep",
+      "tool": "Archive + SQLite",
+      "detail": "Archiving detailed context and creating a compact scheduled memory.",
+      "timestamp": "2026-09-25T22:06:40.162Z"
+    },
+    {
+      "phase": "classify",
+      "tool": "SPORE gate",
+      "detail": "The policy classified the checkpoint as SPORE.",
+      "timestamp": "2026-09-25T22:06:40.161Z"
+    },
+    {
+      "phase": "classify",
+      "tool": "SPORE gate",
+      "detail": "The validated memory policy is deciding what should remain active.",
+      "timestamp": "2026-09-25T22:06:40.159Z"
+    },
+    {
+      "phase": "checkpoint",
+      "tool": "SQLite",
+      "detail": "SQLite stored the dated checkpoint as 294 estimated working tokens.",
+      "timestamp": "2026-09-25T22:06:40.158Z"
+    },
+    {
+      "phase": "checkpoint",
+      "tool": "SQLite",
+      "detail": "Loading the dated 2025-02-01 checkpoint.",
+      "timestamp": "2026-09-25T22:06:40.154Z"
+    },
+    {
+      "phase": "plan",
+      "tool": "Liquid AI",
+      "detail": "Liquid created 3 research queries and a typed wake condition.",
+      "timestamp": "2026-09-25T22:06:40.153Z"
+    },
+    {
+      "phase": "plan",
+      "tool": "Liquid AI",
+      "detail": "Liquid is converting the goal into a bounded research plan.",
+      "timestamp": "2026-09-25T22:06:22.912Z"
+    }
+  ],
+  "plan": {
+    "schema_version": 1,
+    "objective": "Monitor the OpenAI Responses API and shortlist it when official API reference documentation is available.",
+    "subject": "OpenAI Responses API",
+    "search_queries": [
+      "OpenAI Responses API official documentation",
+      "OpenAI API reference documentation",
+      "OpenAI Responses API shortlist"
+    ],
+    "official_domains": [
+      "openai.com"
+    ],
+    "wake_condition": {
+      "attribute": "api_documentation_available",
+      "operator": "==",
+      "target": true
+    }
+  },
+  "search_results": [
+    {
+      "title": "Responses Overview | OpenAI API Reference",
+      "url": "https://developers.openai.com/api/reference/responses/overview",
+      "description": "Responses Overview OpenAI's most advanced interface for generating model responses. Supports text and image inputs, and text outputs. Create stateful interactions with the model, using the output of previous responses as input. Extend the model's capabilities with built-in tools for file search, web search, computer use, and more.",
+      "query": "OpenAI Responses API shortlist"
+    },
+    {
+      "title": "Responses | OpenAI API Reference",
+      "url": "https://developers.openai.com/api/reference/python/resources/responses",
+      "description": "When the response stops for client-owned tool output or approval, the input remains queued and response.steer.pending is emitted after response.completed. Fill the pending event's required_input stubs with saved results and send one matching explicit response.create per parent.",
+      "query": "OpenAI Responses API shortlist"
+    },
+    {
+      "title": "Responses API Reference | openai/completions-responses-migration-pack ...",
+      "url": "https://deepwiki.com/openai/completions-responses-migration-pack/6-responses-api-reference",
+      "description": "Responses API Reference Relevant source files This document provides comprehensive reference documentation for the OpenAI /v1/responses API endpoint, covering all parameters, content types, streaming capabilities, tools integration, and structured output formats.",
+      "query": "OpenAI Responses API shortlist"
+    },
+    {
+      "title": "Use the Azure OpenAI Responses API - Microsoft Foundry",
+      "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses",
+      "description": "Learn how to use the Azure OpenAI Responses API to create, retrieve, and delete stateful responses with Python or REST, including streaming and tools.",
+      "query": "OpenAI Responses API official documentation"
+    },
+    {
+      "title": "API Overview | OpenAI API Reference",
+      "url": "https://developers.openai.com/api/reference/overview",
+      "description": "API Overview Use this reference to look up OpenAI API endpoints, request and response schemas, streaming events, client library methods, and shared behavior such as authentication, errors, rate limits, and request IDs.",
+      "query": "OpenAI API reference documentation"
+    },
+    {
+      "title": "OpenAI API Platform Documentation",
+      "url": "https://developers.openai.com/api/docs",
+      "description": "Explore guides, API docs, and examples for the OpenAI API.",
+      "query": "OpenAI API reference documentation"
+    },
+    {
+      "title": "API Platform | OpenAI",
+      "url": "https://openai.com/api/",
+      "description": "Our API platform offers our latest models and guides for safety best practices.",
+      "query": "OpenAI API reference documentation"
+    },
+    {
+      "title": "Build on the OpenAI API Platform",
+      "url": "https://platform.openai.com/api-reference",
+      "description": "Build on the OpenAI API Platform Sign up or login with an OpenAI account to build with the OpenAI API.",
+      "query": "OpenAI API reference documentation"
+    },
+    {
+      "title": "New tools and features in the Responses API - OpenAI",
+      "url": "https://openai.com/index/new-tools-and-features-in-the-responses-api/",
+      "description": "Using o3 and o4-mini with the Responses API preserves reasoning tokens across requests and tool calls, improving model intelligence and reducing the cost and latency for developers. We're also introducing new features in the Responses API that improve reliability, visibility, and privacy for enterprises and developers.",
+      "query": "OpenAI Responses API shortlist"
+    }
+  ],
+  "evidence_assessment": {
+    "schema_version": 1,
+    "condition_met": true,
+    "matched_urls": [
+      "https://developers.openai.com/api/reference/responses/overview",
+      "https://developers.openai.com/api/reference/python/resources/responses",
+      "https://developers.openai.com/api/reference/overview",
+      "https://openai.com/api/",
+      "https://platform.openai.com/api-reference"
+    ],
+    "summary": "Multiple official OpenAI Responses API documentation pages were found on openai.com.",
+    "provenance_guard": true,
+    "official_sources": [
+      "https://developers.openai.com/api/reference/responses/overview",
+      "https://developers.openai.com/api/reference/python/resources/responses"
+    ]
+  },
+  "archive": {
+    "pointer": "spore_responses_api_docs.json",
+    "bytes": 2009,
+    "digest": "5b81aa40bcf94cbd262f757893f67b4d36531830684277c559c4431974086a89",
+    "tokens_removed": 294,
+    "compact_spore_bytes": 651
+  },
+  "action": {
+    "action_id": "action_spore_responses_api_docs",
+    "run_id": "auto_20260925220622",
+    "spore_id": "spore_responses_api_docs",
+    "subject": "OpenAI Responses API",
+    "action_type": "candidate_shortlisted",
+    "created_at": "2026-09-25T22:07:22.871Z",
+    "result": {
+      "eligible": true,
+      "reason": "Official API documentation is now available, making the provider eligible.",
+      "schema_version": 1
+    }
+  },
+  "model_result": {
+    "status": "validated",
+    "output": {
+      "eligible": true,
+      "reason": "Official API documentation is now available, making the provider eligible.",
+      "schema_version": 1
+    }
+  },
+  "telemetry": {
+    "generated_at": "2026-09-25T22:07:23.982Z",
+    "run_id": "auto_20260925220622",
+    "evidence_mode": "live",
+    "is_test": false,
+    "complete": true,
+    "remote_verified": true,
+    "event_count": 11,
+    "counts": {
+      "run_started": 1,
+      "observation_created": 1,
+      "memory_classified": 1,
+      "memory_spored": 1,
+      "context_released": 1,
+      "wake_check_started": 1,
+      "memory_awakened": 1,
+      "memory_rehydrated": 1,
+      "candidate_reevaluated": 1,
+      "agent_action_completed": 1,
+      "run_completed": 1
+    },
+    "active_tokens_removed": 294,
+    "archive_bytes": 2009,
+    "compact_spore_bytes": 651,
+    "payload_reduction_percent": 67.6,
+    "source_count": 3,
+    "query": "SELECT * FROM spore_karthik_lifecycle_events_v1 WHERE run_id = 'auto_20260925220622' ORDER BY timestamp"
+  },
+  "links": {
+    "repository": "https://github.com/karthikshetty-1629/spore",
+    "liquid": "https://huggingface.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+    "nimble": "https://docs.nimbleway.com/",
+    "rawtree": "https://rawtree.com/",
+    "event": "https://tokensand.com/horizonagentshack"
+  }
+}

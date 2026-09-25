@@ -14,6 +14,7 @@ export class AutonomousWatcher {
     setIntervalFn = setInterval,
     clearIntervalFn = clearInterval,
     onError = () => {},
+    onCycle = () => {},
   }) {
     this.database = database;
     this.searchClient = searchClient;
@@ -23,6 +24,7 @@ export class AutonomousWatcher {
     this.setIntervalFn = setIntervalFn;
     this.clearIntervalFn = clearIntervalFn;
     this.onError = onError;
+    this.onCycle = onCycle;
     this.timer = null;
     this.running = false;
   }
@@ -41,7 +43,7 @@ export class AutonomousWatcher {
             maxResults: 3,
             searchDepth: 'lite',
           });
-          const observed = this.extractFacts(spore, results);
+          const observed = await this.extractFacts(spore, results);
           const evaluation = evaluateWakeCondition(spore.wake_condition, observed.facts);
           const awakened = evaluation.matched
             ? this.database.awakenSpore(spore.spore_id, { checked_at: checkedAt })
@@ -85,7 +87,7 @@ export class AutonomousWatcher {
 
   start({ runImmediately = true } = {}) {
     if (this.timer !== null) return;
-    const tick = () => this.runOnce().catch(this.onError);
+    const tick = () => this.runOnce().then(this.onCycle).catch(this.onError);
     if (runImmediately) void tick();
     this.timer = this.setIntervalFn(tick, this.cadenceMs);
   }

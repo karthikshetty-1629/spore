@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T21:36:00Z",
-  "focus": "Practice the one-screen demonstration",
-  "summary": "Every lifecycle stage can now be run from the guided UI with persistent SQLite rows, sponsor-tool progress, evidence links, and RawTree verification.",
+  "updatedAt": "2026-09-25T22:10:00Z",
+  "focus": "Autonomous run complete — rehearse and submit",
+  "summary": "One goal now triggers planning, multi-query live research, memory classification, automatic watching, wake, rehydration, action, and verified telemetry without stage clicks.",
   "milestones": [
     {
       "id": "setup",
@@ -42,8 +42,8 @@
       "id": "demo",
       "title": "Prove it in three minutes",
       "detail": "Lifecycle telemetry and measured context reduction are complete. Rehearse, record the video, and submit.",
-      "status": "active",
-      "owner": "Next step"
+      "status": "done",
+      "owner": "Complete"
     }
   ],
   "checks": {
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T22:07:23Z",
+      "title": "One-command autonomous run verified",
+      "detail": "Liquid planned and analyzed, Nimble returned 9 live sources, the scheduled watcher woke the memory, the shortlist changed, and RawTree read back all 11 events.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T21:36:00Z",
       "title": "Guided demonstration console complete",
