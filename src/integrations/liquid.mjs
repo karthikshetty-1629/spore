@@ -98,7 +98,7 @@ export class LiquidReevaluationClient {
       stream: false,
       think: false,
       format: schema,
-      options: { temperature: 0 },
+      options: { temperature: 0, num_ctx: 8192 },
     } : {
       model: this.model,
       temperature: 0,
