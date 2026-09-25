@@ -2,6 +2,10 @@ import http from 'node:http';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { GuidedDemoController } from '../src/demo/controller.mjs';
+import { LiquidReevaluationClient } from '../src/integrations/liquid.mjs';
+import { NimbleSearchClient } from '../src/integrations/nimble.mjs';
+import { RawTreeClient } from '../src/integrations/rawtree.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const port = Number(process.env.PORT || 4317);
 const host = '127.0.0.1';
@@ -10,6 +14,7 @@ const progressPath = path.join(root, 'dashboard/progress.json');
 const runtimePath = path.join(root, 'data/dashboard-checks.json');
 const telemetryPath = path.join(root, 'data/telemetry-summary.json');
 let busy = false;
+let demoJob = { busy: false, action: '', message: '', error: '', finishedAt: null };
 async function readJSON(file, fallback) { try { return JSON.parse(await readFile(file, 'utf8')); } catch { return fallback; } }
 async function config() {
   const text = await readFile(path.join(root, '.env'), 'utf8').catch(() => '');
@@ -21,10 +26,27 @@ async function jsonRequest(url, body, key, timeout = 15000) {
   return response.json();
 }
 async function status() {
-  const [cfg, progress, checks, evaluation, telemetry] = await Promise.all([config(), readJSON(progressPath, {}), readJSON(runtimePath, {}), readJSON(path.join(root,'data/model-evaluation.json'), null), readJSON(telemetryPath, null)]);
+  const [cfg, progress, checks, evaluation, telemetry, demo] = await Promise.all([config(), readJSON(progressPath, {}), readJSON(runtimePath, {}), readJSON(path.join(root,'data/model-evaluation.json'), null), readJSON(telemetryPath, null), new GuidedDemoController({root}).snapshot()]);
   let ollama = {online:false, installed:[], modelAvailable:false};
   try { const tags = await jsonRequest('http://127.0.0.1:11434/api/tags', null, null, 2000); const installed = tags.models.map(m=>m.name); ollama = {online:true, installed, modelAvailable:installed.some(n=>n===cfg.LIQUID_MODEL || n===cfg.LIQUID_MODEL+':latest')}; } catch {}
-  return {...progress,checks:{...progress.checks,...checks},evaluation,telemetry,ollama, busy, serverTime:new Date().toISOString(), config:{nimble:!!cfg.NIMBLE_API_KEY, rawtree:!!cfg.RAWTREE_API_KEY, database:cfg.RAWTREE_DATABASE || 'default', model:cfg.LIQUID_MODEL || 'Not configured'}, source:'Local project status + measured lifecycle telemetry + live Ollama check'};
+  return {...progress,checks:{...progress.checks,...checks},evaluation,telemetry,demo:{...demo,job:demoJob},ollama, busy, serverTime:new Date().toISOString(), config:{nimble:!!cfg.NIMBLE_API_KEY, rawtree:!!cfg.RAWTREE_API_KEY, database:cfg.RAWTREE_DATABASE || 'default', model:cfg.LIQUID_MODEL || 'Not configured'}, source:'Local project status + persistent guided demo + measured lifecycle telemetry + live Ollama check'};
+}
+
+async function runDemoAction(action) {
+  demoJob = { busy: true, action, message: `Running ${action.replace('-', ' ')}…`, error: '', finishedAt: null };
+  try {
+    const cfg = await config();
+    const controller = new GuidedDemoController({
+      root,
+      nimbleClient: cfg.NIMBLE_API_KEY ? new NimbleSearchClient({ apiKey: cfg.NIMBLE_API_KEY }) : null,
+      rawtreeClient: cfg.RAWTREE_API_KEY ? new RawTreeClient({ apiKey: cfg.RAWTREE_API_KEY, database: cfg.RAWTREE_DATABASE || 'default', baseUrl: cfg.RAWTREE_BASE_URL || 'https://api.rawtree.com' }) : null,
+      reevaluator: new LiquidReevaluationClient({ baseUrl: cfg.LIQUID_BASE_URL || 'http://127.0.0.1:11434/v1', model: cfg.LIQUID_REEVALUATION_MODEL || cfg.LIQUID_MODEL, apiMode: 'ollama' }),
+    });
+    await controller.run(action);
+    demoJob = { busy: false, action, message: `${action.replace('-', ' ')} completed`, error: '', finishedAt: new Date().toISOString() };
+  } catch (error) {
+    demoJob = { busy: false, action, message: '', error: error.message, finishedAt: new Date().toISOString() };
+  }
 }
 async function checkConnections() {
   if (busy) return;
@@ -47,6 +69,13 @@ http.createServer(async(req,res)=> {
   try {
     const url = new URL(req.url,origin);
     if(req.method==='GET' && url.pathname==='/api/status') return send(200,await status());
+    if(req.method==='POST' && url.pathname.startsWith('/api/demo/')) {
+      if(![origin,`http://localhost:${port}`].includes(req.headers.origin)) return send(403,{error:'Same-origin request required.'});
+      if(demoJob.busy) return send(409,{error:'A demo step is already running.'});
+      const action=url.pathname.slice('/api/demo/'.length);
+      if(!['reset','observe','classify','sleep','wake-live','wake-replay','rehydrate','act','telemetry'].includes(action)) return send(404,{error:'Unknown demo action.'});
+      runDemoAction(action); return send(202,{started:true,action});
+    }
     if(req.method==='POST' && url.pathname==='/api/check') {
       if(![origin,`http://localhost:${port}`].includes(req.headers.origin)) return send(403,{error:'Same-origin request required.'});
       if(busy) return send(409,{error:'Checks already running.'});

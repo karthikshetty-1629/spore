@@ -32,6 +32,15 @@ export function extractFactsFromSearch(spore, results) {
     evidenceUrls.push(...matching.map((item) => item.url));
   }
 
+  if (spore.wake_condition.attribute === 'api_documentation_available') {
+    const matching = results.filter((item) => {
+      const text = `${item.title} ${item.description}`;
+      return /\b(api|developer)\b/i.test(text) && /\b(documentation|docs|reference)\b/i.test(text);
+    });
+    facts.api_documentation_available = matching.length > 0;
+    evidenceUrls.push(...matching.map((item) => item.url));
+  }
+
   if (spore.wake_condition.attribute === 'monthly_price') {
     const prices = [];
     for (const item of results) {

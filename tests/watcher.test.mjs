@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { SporeDatabase } from '../src/storage/sqlite.mjs';
-import { evaluateWakeCondition } from '../src/watcher/conditions.mjs';
+import { evaluateWakeCondition, extractFactsFromSearch } from '../src/watcher/conditions.mjs';
 import { AutonomousWatcher } from '../src/watcher/watcher.mjs';
 
 const now = new Date('2026-09-25T20:00:00Z');
@@ -67,6 +67,18 @@ test('supports numeric threshold conditions', () => {
     evaluateWakeCondition({ attribute: 'monthly_price', operator: '<=', target: 100 }, { monthly_price: 89 }),
     { matched: true, actual: 89, reason: 'numeric threshold matched' },
   );
+});
+
+test('extracts official API documentation availability from search results', () => {
+  const observed = extractFactsFromSearch({
+    wake_condition: { attribute: 'api_documentation_available', operator: '==', target: true },
+  }, [{
+    title: 'Responses API Reference',
+    description: 'Official API reference documentation is available.',
+    url: 'https://platform.openai.com/docs/api-reference/responses',
+  }]);
+  assert.deepEqual(observed.facts, { api_documentation_available: true });
+  assert.deepEqual(observed.evidence_urls, ['https://platform.openai.com/docs/api-reference/responses']);
 });
 
 test('the scheduler invokes cycles without a manual wake action', async (t) => {

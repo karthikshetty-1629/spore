@@ -37,6 +37,7 @@ The required demonstration is: the agent forgets something, the world changes, t
 - The bounded Nimble adapter, typed condition evaluator, and autonomous idempotent watcher are implemented under `src/integrations` and `src/watcher`.
 - Archived context rehydration, strict Liquid reevaluation support, deterministic reevaluation, idempotent action logging, and persistent shortlist updates are implemented under `src/agent`.
 - Stable RawTree lifecycle events, batched delivery, disk-backed retry, read-back verification, measured metrics, and dashboard rendering are implemented under `src/telemetry`, `src/integrations/rawtree.mjs`, and `scripts/demo-telemetry.mjs`.
+- The guided dashboard demo persists each stage in `data/spore-demo.sqlite`, exposes SQLite rows and archive proof, supports live Nimble or labeled replay waking, uses Ollama-native structured output for Liquid, and publishes a copyable RawTree verification query.
 - The complete verified telemetry run is explicitly labeled `historical_replay` and `is_test`. Live-evidence demo rehearsal, recording, and submission remain.
 
 ## Model evidence
@@ -64,7 +65,7 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the complete replay lifecycle through RawTree telemetry and dashboard metrics is implemented and verified. Demo rehearsal and a live-evidence pass are next.
+Current position: the complete lifecycle is available as a seven-stage guided UI and CLI. Live Nimble waking, validated local Liquid reevaluation, and RawTree read-back have each been verified. Rehearsal, recording, and submission are next.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.

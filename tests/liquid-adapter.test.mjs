@@ -39,3 +39,24 @@ test('rejects malformed Liquid reevaluation output', async () => {
   });
   await assert.rejects(client.reevaluate({}), /schema_version must equal 1/);
 });
+
+test('uses Ollama native structured output for local Liquid inference', async () => {
+  let request;
+  const client = new LiquidReevaluationClient({
+    model: 'liquid-local',
+    apiMode: 'ollama',
+    fetchImpl: async (url, options) => {
+      request = { url, body: JSON.parse(options.body) };
+      return {
+        ok: true,
+        json: async () => ({ message: { content: '{"schema_version":1,"eligible":true,"reason":"Matched."}' } }),
+      };
+    },
+  });
+  const result = await client.reevaluate({ subject: 'Provider' });
+  assert.equal(request.url, 'http://127.0.0.1:11434/api/chat');
+  assert.equal(request.body.stream, false);
+  assert.equal(request.body.think, false);
+  assert.equal(request.body.format.type, 'object');
+  assert.equal(result.eligible, true);
+});

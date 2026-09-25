@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:48:45Z",
-  "focus": "Rehearse the three-minute demo",
-  "summary": "The complete sleep, wake, rehydrate, and act lifecycle is now measured and verified in RawTree. Demo polish and submission remain.",
+  "updatedAt": "2026-09-25T21:36:00Z",
+  "focus": "Practice the one-screen demonstration",
+  "summary": "Every lifecycle stage can now be run from the guided UI with persistent SQLite rows, sponsor-tool progress, evidence links, and RawTree verification.",
   "milestones": [
     {
       "id": "setup",
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T21:36:00Z",
+      "title": "Guided demonstration console complete",
+      "detail": "Seven UI stages now expose persistent SQLite state, archive evidence, live or replay waking, validated Liquid output, and RawTree read-back.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T20:48:45Z",
       "title": "Full lifecycle telemetry verified",

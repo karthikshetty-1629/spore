@@ -2,8 +2,59 @@ const $=id=>document.getElementById(id);
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let lastState=null, lastMarkup='';
 const time=s=>s?new Date(s).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not yet checked';
+const safeUrl=value=>{try{const url=new URL(value);return ['http:','https:'].includes(url.protocol)?url.href:'#';}catch{return '#';}};
+const pretty=value=>escape(JSON.stringify(value,null,2));
+const demoSteps=[
+ {stage:0,action:'observe',number:'01',title:'Create the observation',tool:'SQLite',tone:'local',description:'Write the original provider research into persistent working memory.',command:'npm run demo -- observe'},
+ {stage:1,action:'classify',number:'02',title:'Classify the memory',tool:'SPORE gate',tone:'local',description:'Apply the validated four-state policy and create a typed wake condition.',command:'npm run demo -- classify'},
+ {stage:2,action:'sleep',number:'03',title:'Archive and forget',tool:'SQLite + archive',tone:'local',description:'Save detailed evidence, create a compact dormant spore, and release working context.',command:'npm run demo -- sleep'},
+ {stage:3,action:'wake-live',number:'04',title:'Check the live web',tool:'Nimble',tone:'nimble',description:'Run the due-spore watcher against current web evidence and evaluate the condition.',command:'npm run demo -- wake-live'},
+ {stage:4,action:'rehydrate',number:'05',title:'Restore the evidence',tool:'Archive',tone:'local',description:'Verify the checksum and combine historical rationale with fresh facts.',command:'npm run demo -- rehydrate'},
+ {stage:5,action:'act',number:'06',title:'Reevaluate and act',tool:'Liquid AI',tone:'liquid',description:'Run local inference behind a deterministic guard, then update the shortlist exactly once.',command:'npm run demo -- act'},
+ {stage:6,action:'telemetry',number:'07',title:'Publish the proof',tool:'RawTree',tone:'rawtree',description:'Send the complete event timeline and verify every event by reading it back.',command:'npm run demo -- telemetry'},
+];
+function proofSection(title,content,extra=''){return `<section class="proof-section"><div class="proof-title"><strong>${escape(title)}</strong>${extra}</div>${content}</section>`;}
+function renderDemo(demo){
+ if(!demo)return;
+ const job=demo.job||{};
+ $('demo-stage').textContent=`STAGE ${demo.stage} / 7`;
+ $('demo-stage').className=`pill ${demo.stage===7?'green':demo.stage>0?'amber':'neutral'}`;
+ $('demo-status').textContent=demo.stage===7?'Demonstration complete':demo.status.replaceAll('_',' ');
+ $('demo-job').hidden=!job.busy&&!job.error;
+ $('demo-job').className=`demo-job${job.error?' failed':''}`;
+ $('demo-job-title').textContent=job.error?'Step needs attention':job.message||'Running demo step…';
+ $('demo-job-copy').textContent=job.error?job.error:'Watch this panel update when the operation completes.';
+ $('reset-demo').disabled=job.busy;
+ $('demo-steps').innerHTML=demoSteps.map(step=>{
+  const complete=demo.stage>step.stage, active=demo.stage===step.stage, running=job.busy&&job.action===step.action;
+  const toolUrl=step.tone==='nimble'?demo.links.nimble:step.tone==='liquid'?demo.links.liquid:step.tone==='rawtree'?demo.links.rawtree:'';
+  const mainButton=step.action==='wake-live'
+   ? `<div class="step-actions"><button data-demo-action="wake-live" ${!active||job.busy?'disabled':''}>${running?'Searching…':'Run live Nimble'}</button><button class="secondary-button" data-demo-action="wake-replay" ${!active||job.busy?'disabled':''}>Use labeled replay</button></div>`
+   : `<button data-demo-action="${step.action}" ${!active||job.busy?'disabled':''}>${running?'Running…':complete?'Completed':'Run this step'}</button>`;
+  return `<article class="demo-step ${complete?'complete':active?'active':'locked'}"><div class="step-rail"><span>${complete?'✓':step.number}</span><i></i></div><div class="step-body"><div class="step-top"><div><span class="tool-chip ${step.tone}">${escape(step.tool)}</span><h3>${escape(step.title)}</h3></div>${toolUrl?`<a class="external-link" href="${safeUrl(toolUrl)}" target="_blank" rel="noreferrer">Open ${escape(step.tool)} ↗</a>`:''}</div><p>${escape(step.description)}</p><div class="command-row"><code>${escape(step.command)}</code><button class="copy-command" data-copy="${escape(step.command)}" type="button">Copy</button></div>${mainButton}</div></article>`;
+ }).join('');
+ const counts=demo.storage?.counts||{};
+ $('proof-metrics').innerHTML=[['Working',counts.working||0],['Spores',counts.spores||0],['Shortlist',counts.shortlist||0],['Events',demo.events?.length||0]].map(([label,value])=>`<div><strong>${escape(value)}</strong><span>${label}</span></div>`).join('');
+ const proofs=[];
+ const rows=[];
+ if(demo.storage?.working_memory)rows.push(['working_memories',demo.storage.working_memory.subject,'ACTIVE']);
+ if(demo.storage?.spore)rows.push(['spores',demo.storage.spore.subject,demo.storage.spore.status]);
+ for(const item of demo.storage?.shortlist||[])rows.push(['shortlist',item.subject,'SHORTLISTED']);
+ if(demo.storage?.action)rows.push(['agent_actions',demo.storage.action.subject,demo.storage.action.action_type]);
+ proofs.push(proofSection('SQLite · data/spore-demo.sqlite',rows.length?`<div class="data-table">${rows.map(row=>`<div><code>${escape(row[0])}</code><span>${escape(row[1])}</span><b>${escape(row[2])}</b></div>`).join('')}</div>`:'<p class="empty-proof">No rows yet. Run Step 1.</p>',demo.storage?.exists?'<span class="proof-ok">PERSISTENT</span>':'<span class="proof-wait">EMPTY</span>'));
+ if(demo.decision)proofs.push(proofSection('Memory decision',`<pre>${pretty(demo.decision)}</pre>`,'<span class="proof-ok">VALIDATED</span>'));
+ if(demo.archive?.exists)proofs.push(proofSection('Local archive',`<div class="archive-proof"><span>▣</span><div><strong>${escape(demo.archive.pointer)}</strong><small>${escape(demo.archive.bytes)} bytes · checksum verified on restore</small><code>${escape(demo.archive.path)}</code></div></div>`,'<span class="proof-ok">SAVED</span>'));
+ const evidence=demo.fresh_evidence?.evidence_urls||[];
+ if(evidence.length)proofs.push(proofSection(`${demo.fresh_evidence.evidence_mode==='live'?'Live Nimble':'Replay'} evidence`,evidence.map(url=>`<a class="source-link" href="${safeUrl(url)}" target="_blank" rel="noreferrer">${escape(url)} ↗</a>`).join(''),`<span class="proof-ok">${demo.fresh_evidence.evidence_mode==='live'?'LIVE':'REPLAY'}</span>`));
+ if(demo.rehydrated)proofs.push(proofSection('Rehydrated context',`<pre>${pretty(demo.rehydrated)}</pre>`,'<span class="proof-ok">INTEGRITY OK</span>'));
+ if(demo.model_result)proofs.push(proofSection('Liquid reevaluation',`<pre>${pretty(demo.model_result)}</pre>`,`<span class="proof-ok">${escape(demo.model_result.status)}</span>`));
+ if(demo.telemetry)proofs.push(proofSection('RawTree read-back',`<p>${escape(demo.telemetry.event_count)} events verified for <code>${escape(demo.run_id)}</code>.</p><div class="command-row"><code>${escape(demo.telemetry.query)}</code><button class="copy-command" data-copy="${escape(demo.telemetry.query)}" type="button">Copy SQL</button></div><a class="source-link" href="${safeUrl(demo.links.rawtree)}" target="_blank" rel="noreferrer">Open RawTree and paste this query ↗</a>`,'<span class="proof-ok">VERIFIED</span>'));
+ if(demo.events?.length)proofs.push(proofSection('Lifecycle event stream',`<div class="event-stream">${demo.events.map((event,index)=>`<div><span>${String(index+1).padStart(2,'0')}</span><strong>${escape(event.event_type.replaceAll('_',' '))}</strong><small>${escape(event.evidence_mode)}</small></div>`).join('')}</div>`));
+ $('demo-proof').innerHTML=proofs.join('');
+}
 function render(s){
  lastState=s;
+ renderDemo(s.demo);
  $('sync-label').textContent=`Connected · refreshed ${time(s.serverTime)}`;
  $('sync-dot').style.background='var(--green)';
  $('focus').textContent=s.focus; $('summary').textContent=s.summary;
@@ -12,12 +63,13 @@ function render(s){
  $('progress-bar').style.width=(done/s.milestones.length*100)+'%';
  document.querySelector('[role="progressbar"]').setAttribute('aria-valuenow',done);
  const evaluation=s.evaluation;
- const telemetry=s.telemetry;
+ const telemetry=s.demo?.telemetry||s.telemetry;
  const passed=evaluation?.cases?.filter(x=>x.passed).length??0, total=evaluation?.cases?.length??0;
- const good=total>0&&passed===total&&evaluation.model===s.config.model;
+ const liquidDemoVerified=s.demo?.model_result?.status==='validated';
+ const good=liquidDemoVerified||(total>0&&passed===total&&evaluation.model===s.config.model);
  const smallModel=s.config.model.replace('hf.co/LiquidAI/','').replace('-GGUF','');
  const services=[
-  {name:'Liquid AI',icon:'◒',label:!s.ollama.online?'OFFLINE':good?'TESTS PASSED':'NEEDS TUNING',tone:good?'green':'amber',detail:!s.ollama.online?'Open Ollama to restore local inference.':good?`${smallModel} passed ${passed}/${total} sample decisions. Broader validation remains.`:`${smallModel} is ${s.ollama.modelAvailable?'installed':'not installed'}. Classification quality is not yet validated.`,left:'MEMORY DECISIONS',right:s.ollama.online?'Local server online':'Local server offline'},
+  {name:'Liquid AI',icon:'◒',label:!s.ollama.online?'OFFLINE':liquidDemoVerified?'DEMO VERIFIED':good?'TESTS PASSED':'NEEDS TUNING',tone:good?'green':'amber',detail:!s.ollama.online?'Open Ollama to restore local inference.':liquidDemoVerified?'The local 8B model returned a schema-valid reevaluation and agreed with the deterministic guard.':good?`${smallModel} passed ${passed}/${total} sample decisions. Broader validation remains.`:`${smallModel} is ${s.ollama.modelAvailable?'installed':'not installed'}. Classification quality is not yet validated.`,left:'MEMORY DECISIONS',right:s.ollama.online?'Local server online':'Local server offline'},
   ...['nimble','rawtree'].map((key,i)=>{const c=s.checks[key];const configured=s.config[key];const ok=configured&&c?.status==='verified';return{name:i?'RawTree':'Nimble',icon:i?'≋':'⌁',label:!configured?'KEY MISSING':ok?'VERIFIED':c?.status==='error'?'CHECK FAILED':'NOT TESTED',tone:ok?'green':'amber',detail:!configured?'Add the service key to your local .env file.':c?.detail||'Connection has not been tested.',left:i?'MEMORY ANALYTICS':'LIVE WEB RESEARCH',right:c?.checkedAt?`Checked ${time(c.checkedAt)}`:'Not checked'};})
  ];
  $('connection-count').textContent=`${services.filter(x=>x.tone==='green').length} / 3 verified`;
@@ -49,6 +101,25 @@ function render(s){
 }
 async function refresh(){try{const r=await fetch('/api/status');if(!r.ok)throw new Error();render(await r.json());}catch{$('sync-label').textContent='Connection lost · retrying';$('sync-dot').style.background='var(--amber)';$('error').textContent='The local dashboard server is unavailable. Previously displayed status may be out of date.';$('error').hidden=false;}}
 $('check-button').addEventListener('click',async()=>{ $('check-button').disabled=true;try{const r=await fetch('/api/check',{method:'POST'});if(!r.ok)throw new Error();await refresh();}catch{$('error').textContent='Could not start the checks. Try again when the local server is available.';$('error').hidden=false;$('check-button').disabled=false;}});
+async function runDemoAction(action){
+ try{
+  const response=await fetch(`/api/demo/${action}`,{method:'POST'});
+  const body=await response.json();
+  if(!response.ok)throw new Error(body.error||'Could not start this demo step.');
+  await refresh();
+  for(let attempt=0;attempt<180;attempt+=1){
+   await new Promise(resolve=>setTimeout(resolve,500));
+   await refresh();
+   if(!lastState?.demo?.job?.busy)break;
+  }
+ }catch(error){$('error').textContent=error.message;$('error').hidden=false;await refresh();}
+}
+document.addEventListener('click',async event=>{
+ const actionButton=event.target.closest('[data-demo-action]');
+ if(actionButton){await runDemoAction(actionButton.dataset.demoAction);return;}
+ const copyButton=event.target.closest('[data-copy]');
+ if(copyButton){await navigator.clipboard.writeText(copyButton.dataset.copy);const old=copyButton.textContent;copyButton.textContent='Copied';setTimeout(()=>{copyButton.textContent=old;},1200);}
+});
 function countdown(){const diff=new Date('2026-09-25T16:30:00-07:00')-Date.now();if(diff<=0){$('countdown').textContent='Deadline passed';return;}const mins=Math.floor(diff/60000);$('countdown').textContent=`${Math.floor(mins/60)}h ${String(mins%60).padStart(2,'0')}m left`;}
 countdown();setInterval(countdown,1000);refresh();setInterval(refresh,5000);
 const toolContext=document.modelContext;
