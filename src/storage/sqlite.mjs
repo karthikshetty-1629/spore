@@ -12,7 +12,7 @@ function timestamp(value = new Date().toISOString()) {
   if (typeof value !== 'string' || Number.isNaN(Date.parse(value))) {
     throw new TypeError('timestamp must be an ISO-compatible string');
   }
-  return value;
+  return new Date(value).toISOString();
 }
 
 function encode(value) {
@@ -242,6 +242,25 @@ export class SporeDatabase {
       WHERE status = 'DORMANT' AND next_check_at <= ?
       ORDER BY next_check_at, spore_id
     `).all(timestamp(asOf)).map(mapSpore);
+  }
+
+  recordSporeCheck(sporeId, { checked_at, next_check_at }) {
+    const result = this.database.prepare(`
+      UPDATE spores
+      SET last_checked_at = ?, next_check_at = ?
+      WHERE spore_id = ? AND status = 'DORMANT'
+    `).run(timestamp(checked_at), timestamp(next_check_at), sporeId);
+    return Number(result.changes) === 1;
+  }
+
+  awakenSpore(sporeId, { checked_at }) {
+    const at = timestamp(checked_at);
+    const result = this.database.prepare(`
+      UPDATE spores
+      SET status = 'AWAKENED', last_checked_at = ?, awakened_at = ?
+      WHERE spore_id = ? AND status = 'DORMANT'
+    `).run(at, at, sporeId);
+    return Number(result.changes) === 1;
   }
 
   counts() {

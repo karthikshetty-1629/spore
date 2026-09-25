@@ -34,7 +34,8 @@ The required demonstration is: the agent forgets something, the world changes, t
 - Strict input/output validation is implemented in `src/domain/memory-validation.mjs`; `src/memory/gate.mjs` is the validated entry point.
 - SQLite persistence for runs, working memory, durable memory, and spores is implemented in `src/storage/sqlite.mjs`; the default application path is `data/spore.sqlite`.
 - Integrity-checked evidence archiving and transactional working-context removal are implemented in `src/storage/archive.mjs` and `src/memory/lifecycle.mjs`.
-- The autonomous watcher and the rest of the application-core agent loop are not implemented yet.
+- The bounded Nimble adapter, typed condition evaluator, and autonomous idempotent watcher are implemented under `src/integrations` and `src/watcher`.
+- Rehydration, agent action, and RawTree lifecycle telemetry are not implemented yet.
 
 ## Model evidence
 
@@ -61,14 +62,14 @@ The gate must use versioned schemas, deterministic policy, validation invariants
 
 ## Exact build order
 
-Current position: the memory gate, validation, SQLite persistence, evidence archiving, and working-context removal are complete. The Nimble adapter and autonomous watcher are next.
+Current position: memory compilation, persistence, archive-and-forget, Nimble search, condition evaluation, and autonomous waking are complete. Rehydration and agent action are next.
 
 1. Completed: versioned decision shape, deterministic policy, strict validation, and regression tests.
 2. Completed: SQLite tables for spores, working memory, durable memory, and runs.
 3. Completed: local archive storage with integrity checks and transactional working-context removal.
-4. Next: wrap the proven Nimble search request in a narrow adapter returning normalized evidence with URLs and timestamps.
+4. Completed: bounded Nimble search adapter returning normalized evidence with URLs.
 5. Wrap RawTree writes in an append-only lifecycle event adapter.
-6. Add a scheduler, due-spore query, and typed condition evaluator.
+6. Completed: scheduler, due-spore query, typed condition evaluator, retry isolation, and idempotent waking.
 7. Rehydrate archived rationale with fresh evidence, reevaluate the provider, and update a shortlist.
 8. Add a resettable end-to-end scenario using clearly labeled Day 1 / Day 60 fixtures.
 9. Replace or supplement the replay sensor with live Nimble evidence.

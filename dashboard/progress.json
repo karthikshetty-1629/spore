@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-09-25T20:22:45Z",
-  "focus": "Wake memories when the world changes",
-  "summary": "Memory persistence and archive-and-forget are complete. The autonomous web watcher is next.",
+  "updatedAt": "2026-09-25T20:26:14Z",
+  "focus": "Rehydrate memory and act",
+  "summary": "The scheduled watcher can check due SPOREs and wake matching memories once. Rehydration and action are next.",
   "milestones": [
     {
       "id": "setup",
@@ -27,16 +27,16 @@
     {
       "id": "watcher",
       "title": "Wake when the world changes",
-      "detail": "Use scheduled Nimble checks to detect a changed condition without a manual wake button.",
-      "status": "active",
-      "owner": "Next step"
+      "detail": "A bounded Nimble adapter, typed condition engine, scheduler, retry isolation, and idempotent waking are implemented.",
+      "status": "done",
+      "owner": "Complete"
     },
     {
       "id": "action",
       "title": "Let the agent act again",
       "detail": "Recover historical rationale, combine fresh evidence, reevaluate the provider, and update the shortlist.",
-      "status": "pending",
-      "owner": "Upcoming"
+      "status": "active",
+      "owner": "Next step"
     },
     {
       "id": "demo",
@@ -59,6 +59,12 @@
     }
   },
   "activity": [
+    {
+      "time": "2026-09-25T20:26:14Z",
+      "title": "Autonomous watcher complete",
+      "detail": "Due SPOREs can now search through the Nimble adapter, evaluate typed facts, reschedule, and awaken exactly once.",
+      "type": "success"
+    },
     {
       "time": "2026-09-25T20:22:45Z",
       "title": "Archive-and-forget lifecycle complete",

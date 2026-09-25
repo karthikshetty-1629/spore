@@ -12,7 +12,7 @@ The repository is a finalized development baseline. The local build observatory 
 
 The first memory-gate evaluation showed that an LLM cannot safely own lifecycle decisions by itself: the 1.2B instruct model passed 1/8 strict cases, the 2.6B reasoning model did not produce usable short structured responses, and the 8B-A1B model understood the SPORE case but still omitted a required trigger field. The implementation will therefore combine Liquid-assisted extraction with a deterministic policy, schema validation, and fail-closed behavior.
 
-The memory gate classifies all eight representative project cases correctly and strictly validates normalized observations and model decisions. SQLite persists every memory class. A SPORE transition now archives detailed evidence with an integrity checksum and removes it from working context only after the database transaction succeeds. The autonomous watcher is next. See [the continuation handoff](docs/HANDOFF.md) for the exact build order and acceptance criteria.
+The memory gate classifies all eight representative project cases correctly and strictly validates normalized observations and model decisions. SQLite persists every memory class. A SPORE transition archives detailed evidence with an integrity checksum before removing it from working context. The scheduler now checks due spores through a bounded Nimble adapter, evaluates typed conditions, and wakes each match once. Rehydration and agent action are next. See [the continuation handoff](docs/HANDOFF.md) for the exact build order and acceptance criteria.
 
 ## Intended demonstration
 
@@ -62,6 +62,12 @@ Inspect the archive-and-forget lifecycle using temporary local storage:
 
 ```sh
 npm run lifecycle:demo
+```
+
+Run the watcher with explicitly labeled historical-replay evidence and no API credits:
+
+```sh
+npm run watcher:demo
 ```
 
 Run the local build observatory:
